@@ -1,0 +1,33 @@
+      //envia correo si el pago fue exitoso
+      const productNames = getOrder[0].orderItems.map(
+        (item) => item.product.name
+      );
+      const productNamesString = productNames.join(", ");
+
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.NEXT_PUBLIC_NODE_MAILER_USER,
+          pass: process.env.NEXT_PUBLIC_NODE_MAILER_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: `"${process.env.NEXT_PUBLIC_STORE_NAME} 👋"<${process.env.NEXT_PUBLIC_NODE_MAILER_USER}>`,
+        to: email,
+        subject: "Pedido Recibido",
+        html: `
+          <h1>Hola ${name},</h1>
+          <p>Tu pedido fue recibido y será enviado pronto.</p>
+          <hr>
+          <h2>Datos del Pedido:</h2>
+          <p>Id del pedido: ${order.id}</p>
+          <p>Productos: ${productNamesString}</p>
+          <p>Total: ${formatter.format(total)} CLP</p>
+          <hr>
+          <h2>Cuando se envié tu pedido recibirás un email con la confirmacón.</h2>
+          `,
+      };
+      await transporter.sendMail(mailOptions);

@@ -1,0 +1,65 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  JEFE
+  ADMIN
+  ENCARGADO
+  ESTUDIANTE
+}
+
+// Modelo para la tabla "Users"
+model User {
+  id          String      @id @default(uuid())
+  email       String      @unique
+  pass        String
+  rut         String      @unique
+  name        String
+  created_at  DateTime    @default(now())
+
+  records     Record[]
+
+  role        Role   
+
+}
+
+
+// Modelo para la tabla "Pcs"
+model Pc {
+  id              String    @id @default(uuid())
+  name            String
+  model           String
+  brand           String
+  status          Int
+  created_at      DateTime   @default(now())
+
+  records         Record[]
+
+  @@index([id])
+}
+
+// Modelo para la tabla de relación "Records"
+model Record {
+  id          String      @id @default(uuid())
+  
+  loan_date   DateTime   @default(now())
+  return_date DateTime?
+
+  user_id     String 
+  user        User       @relation(fields: [user_id], references: [id])
+  
+  pc_id       String 
+  pc          Pc         @relation(fields: [pc_id], references: [id])
+  
+  @@index([user_id])
+  @@index([pc_id])
+}
+
+
