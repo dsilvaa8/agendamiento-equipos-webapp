@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       }
     );
 
-    const seralized = serialize("admin", token, {
+    const seralized = serialize("session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
