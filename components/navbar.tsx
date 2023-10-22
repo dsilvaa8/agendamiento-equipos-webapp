@@ -18,14 +18,14 @@ import { usePathname } from "next/navigation";
 import { LogOutButton } from "./LogOutButton";
 import { ThemeToggle } from "./theme-toggle";
 
-const NavBar = () => {
+const NavBar = (user: any) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pathname = usePathname();
-
+  console.log(user);
   return (
     <>
-      <div className="hidden md:block lg:block">
+      <div className="hidden md:block">
         <Link
           href="/admin"
           className="md:absolute md:top-0 md:left-0 lg:absolute lg:top-0 lg:left-0"
@@ -62,7 +62,19 @@ const NavBar = () => {
                 pathname === "/admin/users" ? "text-red-600" : "foreground"
               }`}
             >
-              Users
+              Usuarios
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link
+              href="/admin/laboratories"
+              className={`text-xl ${
+                pathname === "/admin/laboratories"
+                  ? "text-red-600"
+                  : "foreground"
+              }`}
+            >
+              Laboratorios
             </Link>
           </NavbarItem>
         </NavbarContent>
@@ -84,7 +96,19 @@ const NavBar = () => {
                 pathname === "/admin/users" ? "text-red-600" : "foreground"
               }`}
             >
-              Users
+              Usuarios
+            </Link>
+          </NavbarMenuItem>
+          <NavbarMenuItem>
+            <Link
+              href="/admin/laboratories"
+              className={`text-xl ${
+                pathname === "/admin/laboratories"
+                  ? "text-red-600"
+                  : "foreground"
+              }`}
+            >
+              Laboratorios
             </Link>
           </NavbarMenuItem>
         </NavbarMenu>

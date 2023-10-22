@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     const token = sign(
       {
-        user,
+        data: user,
       },
       secret,
       {
@@ -66,13 +66,16 @@ export async function POST(request: Request) {
       }
     );
 
-    const seralized = serialize("admin", token, {
+    console.log(token);
+
+    const seralized = serialize("session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: MAX_AGE,
       path: "/",
     });
+    console.log(seralized);
 
     const response = {
       message: "Authenticated!",

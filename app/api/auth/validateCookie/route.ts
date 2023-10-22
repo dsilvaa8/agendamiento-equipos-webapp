@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const cookieStore = cookies();
 
-  const token = cookieStore.get("admin");
+  const token = cookieStore.get("session");
+  console.log(token);
 
   if (!token) {
     return NextResponse.json(
@@ -27,7 +28,7 @@ export async function GET() {
     verify(value, secret);
 
     const response = {
-      user: "Super Top Secret User",
+      user: "user.role",
     };
 
     return new Response(JSON.stringify(response), {

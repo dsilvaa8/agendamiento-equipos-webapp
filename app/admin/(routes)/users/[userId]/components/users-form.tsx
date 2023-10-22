@@ -44,16 +44,14 @@ const formSchema = z.object({
 type UserFormValues = z.infer<typeof formSchema>;
 
 interface UserFormProps {
-  initialData:
-    | (User & {
-        role: Role;
-      })
-    | null;
+  initialData: User | null;
 }
 
 export const UsersForm: React.FC<UserFormProps> = ({ initialData }) => {
   const params = useParams();
   const router = useRouter();
+
+  console.log(initialData);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -247,9 +245,9 @@ export const UsersForm: React.FC<UserFormProps> = ({ initialData }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Admin">Admin</SelectItem>
-                      <SelectItem value="Superviser">Encargado</SelectItem>
-                      <SelectItem value="Student">Estudiante</SelectItem>
+                      <SelectItem value="JEFE">Jefe de laboratorio</SelectItem>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                      <SelectItem value="ENCARGADO">Encargado</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

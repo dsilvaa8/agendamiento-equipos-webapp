@@ -1,11 +1,13 @@
 "use client";
+
 import Navbar from "@/components/navbar";
 import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Loading from "../loading";
 
 interface UserResponse {
-  user: string | null;
+  user: any | null;
   error: AxiosError | null;
 }
 
@@ -15,6 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [isUser, setUser] = useState([{}]);
   const { push } = useRouter();
 
   useEffect(() => {
@@ -26,15 +29,17 @@ export default function RootLayout({
         return;
       }
       setIsSuccess(true);
+      setUser(user);
     })();
   }, [push]);
 
   if (!isSuccess) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
+
   return (
     <>
-      <Navbar />
+      <Navbar user={isUser}/>
       {children}
     </>
   );

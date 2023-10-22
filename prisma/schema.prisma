@@ -31,8 +31,7 @@ model User {
 }
 
 model Laboratory {
-  id              String    @id @default(uuid())
-
+  id              Int       @id @default(autoincrement())
   pcs             Pc[]  
 }
 
@@ -42,12 +41,12 @@ model Pc {
   name                                      String
   model                                     String
   brand                                     String
-  status                                    Int
+  status                                    Boolean
   created_at                                DateTime   @default(now())
 
   records                                   Record[]
 
-  laboratory_id                             String
+  laboratory_id                             Int
   laboratory                                Laboratory @relation(fields: [laboratory_id], references: [id])
   
   @@index([laboratory_id])
