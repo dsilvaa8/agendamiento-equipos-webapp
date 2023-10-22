@@ -15,12 +15,19 @@ export interface User {
 // Modelo para la tabla "Pcs"
 export interface Pc {
   id: string;
+  laboratory_id: string;
+  laboratory: Laboratory;
   name: string;
   model: string;
   brand: string;
   status: number;
   created_at: Date;
   records: Record[];
+}
+
+export interface Laboratory {
+  id: string;
+  pcs: Pc[];
 }
 
 // Modelo para la tabla de relación "Records"
