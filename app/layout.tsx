@@ -3,7 +3,6 @@ import { ToastProvider } from "@/providers/toast-provider";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
-import AppWrapper from "@/components/app-wrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -21,7 +20,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ToastProvider />
-          <AppWrapper>{children}</AppWrapper>
+          {children}
         </ThemeProvider>
       </body>
     </html>

@@ -47,9 +47,14 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     });
   }
+  const body = await req.json();
 
   try {
-    const laboratory = await prismadb.laboratory.create({});
+    const laboratory = await prismadb.laboratory.create({
+      data: {
+        number: body.number,
+      },
+    });
     if (!laboratory) {
       return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }

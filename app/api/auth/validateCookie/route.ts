@@ -6,7 +6,6 @@ export async function GET() {
   const cookieStore = cookies();
 
   const token = cookieStore.get("session");
-  console.log(token);
 
   if (!token) {
     return NextResponse.json(
@@ -25,10 +24,10 @@ export async function GET() {
   const secret = process.env.JWT_SECRET || "";
 
   try {
-    verify(value, secret);
+    const user = verify(value, secret);
 
     const response = {
-      user: "user.role",
+      user,
     };
 
     return new Response(JSON.stringify(response), {

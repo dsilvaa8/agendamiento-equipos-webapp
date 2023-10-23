@@ -1,7 +1,11 @@
+import { getUser } from "@/lib/serverUtils";
+
 const DashboardPage = () => {
+  const user = getUser();
+
   return (
-    <div className="flex-col overflow-x-hidden">
-      <h2>home</h2>
+    <div className="h-auto min-h-screen mx-auto w-full max-w-screen-xl px-2.5 md:px-20">
+      <h2>Bienvenido {user.name}</h2>
     </div>
   );
 };

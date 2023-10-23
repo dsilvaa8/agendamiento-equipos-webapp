@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { Laboratory } from "@prisma/client";
+import { Laboratory, Pc } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
@@ -25,9 +25,13 @@ import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { Card } from "@/components/ui/card";
 
 interface LaboratoryFormProps {
-  initialData: Laboratory | null;
+  initialData: {
+    id: string; // Asumiendo que el ID es una cadena (string)
+    pcs: Pc[]; // Un arreglo de objetos de tipo Pc
+  } | null;
 }
 
 export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
@@ -113,7 +117,45 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
         )}
       </div>
       <Separator />
+      <div>
+        <div className="flex flex-col">
+          <p>Laboratiorio: {initialData?.number}</p>
+          <p>Notebooks de este laboratorio:</p>
+        </div>
 
+        <div className="flex md:flex-row flex-col pt-5 pb-3 gap-3">
+          {initialData?.pcs.map((pc) => (
+            <Card key={pc.id} className="p-5 w-full md:min-w-1/4 md:w-auto">
+              <div className="flex gap-4">
+                <div>
+                  <div className="flex justify-between">
+                    <p>Notebook:</p>
+                  </div>
+                  <div className="flex flex-col py-3">
+                    <p>Nombre: {pc.name}</p>
+                    <p>Modelo: {pc.model}</p>
+                    <p>Modelo: {pc.brand}</p>
+                  </div>
+                </div>
+                <div>
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRANj8e9TV6A-RXuvMZ4zXJvuEMCei6T_mylw"
+                    alt="img"
+                    className="aspect-ratio-1/1 w-[110px]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button className="w-full">Editar</Button>
+                <Button className="w-full">Eliminar</Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+        <Button className="w-full md:w-1/4">Agregar notebook</Button>
+      </div>
+      <Separator />
       <div className="flex gap-3">
         <Button
           disabled={loading}
@@ -121,11 +163,16 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
           onClick={() => {
             router.push("/admin/laboratories");
           }}
+          className="w-full md:w-1/4"
         >
           Cancelar
         </Button>
 
-        <Button disabled={loading} onClick={onSubmit}>
+        <Button
+          disabled={loading}
+          onClick={onSubmit}
+          className="w-full md:w-1/4"
+        >
           {loading ? (
             <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
           ) : (

@@ -14,7 +14,7 @@ export async function OPTIONS() {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { laboratory_id: number } }
+  { params }: { params: { laboratory_id: string } }
 ) {
   const auth = await apiAuth(req);
   if (!auth) {
@@ -43,7 +43,7 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { laboratory_id: number } }
+  { params }: { params: { laboratory_id: string } }
 ) {
   const auth = await apiAuth(req);
   if (!auth) {
@@ -62,7 +62,7 @@ export async function DELETE(
     });
 
     if (!laboratory) {
-      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+      return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }
 
     return NextResponse.json({ status: 201 }, { headers: corsHeaders });

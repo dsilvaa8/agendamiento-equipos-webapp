@@ -6,12 +6,17 @@ import { CellAction } from "./cell-action";
 
 export type LaboratoryColumn = {
   id: string;
+  number: string;
 };
 
 export const columns: ColumnDef<LaboratoryColumn>[] = [
   {
     accessorKey: "id",
     header: "Id",
+  },
+  {
+    accessorKey: "number",
+    header: "Laboratorio",
   },
   {
     id: "actions",

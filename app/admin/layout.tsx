@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import Loading from "../loading";
 
 interface UserResponse {
-  user: any | null;
+  data: any | null;
   error: AxiosError | null;
 }
 
@@ -17,19 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [isUser, setUser] = useState([{}]);
+  const [currentUser, setUser] = useState({});
   const { push } = useRouter();
 
   useEffect(() => {
     (async () => {
-      const { user, error } = await getUser();
+      const { data, error } = await getUser();
 
       if (error) {
         push("/");
         return;
       }
       setIsSuccess(true);
-      setUser(user);
+      setUser(data.user);
     })();
   }, [push]);
 
@@ -39,7 +39,7 @@ export default function RootLayout({
 
   return (
     <>
-      <Navbar user={isUser}/>
+      <Navbar user={currentUser} />
       {children}
     </>
   );
@@ -50,14 +50,14 @@ async function getUser(): Promise<UserResponse> {
     const { data } = await axios.get("/api/auth/validateCookie");
 
     return {
-      user: data,
+      data,
       error: null,
     };
   } catch (e) {
     const error = e as AxiosError;
 
     return {
-      user: null,
+      data: null,
       error,
     };
   }

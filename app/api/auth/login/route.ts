@@ -56,15 +56,9 @@ export async function POST(request: Request) {
 
     const secret = process.env.JWT_SECRET || "";
 
-    const token = sign(
-      {
-        data: user,
-      },
-      secret,
-      {
-        expiresIn: MAX_AGE,
-      }
-    );
+    const token = sign(user, secret, {
+      expiresIn: MAX_AGE,
+    });
 
     console.log(token);
 
@@ -75,7 +69,6 @@ export async function POST(request: Request) {
       maxAge: MAX_AGE,
       path: "/",
     });
-    console.log(seralized);
 
     const response = {
       message: "Authenticated!",

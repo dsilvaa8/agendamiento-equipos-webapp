@@ -22,7 +22,7 @@ const NavBar = (user: any) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const pathname = usePathname();
-  console.log(user);
+
   return (
     <>
       <div className="hidden md:block">
@@ -52,7 +52,7 @@ const NavBar = (user: any) => {
         </NavbarBrand>
 
         <NavbarContent
-          className="hidden md:absolute md:flex left-0 top-0 gap-4"
+          className="hidden md:absolute md:flex left-0 top-0 gap-4 pl-[200px]"
           justify="start"
         >
           <NavbarItem>
@@ -116,7 +116,8 @@ const NavBar = (user: any) => {
 
       <div className="hidden lg:block md:block absolute top-0 right-0">
         <div className="relative top-3 right-10 z-50">
-          <div className="flex gap-3 ">
+          <div className="flex gap-3 items-center">
+            <p>{user.user.name}</p>
             <ThemeToggle />
             <LogOutButton />
           </div>

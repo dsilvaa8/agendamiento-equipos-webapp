@@ -6,7 +6,8 @@ const UsersPage = async () => {
   const laboratories = await prismadb.laboratory.findMany();
 
   const formattedUsers: LaboratoryColumn[] = laboratories.map((item) => ({
-    id: item.id.toString(),
+    id: item.id,
+    number: item.number.toString(),
   }));
 
   return (

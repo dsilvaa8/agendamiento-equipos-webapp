@@ -39,7 +39,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { laboratory_id: string } }
+) {
   const auth = await apiAuth(req);
   if (!auth) {
     return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
@@ -49,20 +52,24 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, model, brand, status, laboratory_id } = body;
+  const { name, model, brand, status } = body;
 
   try {
+    const laboratory = await prismadb.laboratory.findUnique({
+      where: { id: params.laboratory_id },
+    });
+
+    if (!laboratory) {
+      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+    }
+    // Ahora, puedes conectar el Pc al Laboratorio utilizando el ID
     const pc = await prismadb.pc.create({
       data: {
         name,
         model,
         brand,
         status,
-        laboratory: {
-          connect: {
-            id: laboratory_id,
-          },
-        },
+        laboratory_id: params.laboratory_id,
       },
     });
     if (!pc) {

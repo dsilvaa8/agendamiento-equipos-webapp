@@ -12,35 +12,6 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
-  const auth = await apiAuth(req);
-  if (!auth) {
-    return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  const body = await req.json();
-  const { id } = body;
-
-  try {
-    const user = await prismadb.user.findUnique({
-      where: { id: params.userId },
-    });
-    if (!user) {
-      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
-    }
-    return NextResponse.json(user);
-  } catch (error) {
-    console.error("Error al autenticar:", error);
-    return NextResponse.json({ error: 500 }, { headers: corsHeaders });
-  }
-}
-
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { userId: string } }
@@ -54,24 +25,25 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { email, pass, rut, name, role } = body;
+  const { id, name, model, brand, status, laboratory_id } = body;
 
   console.log(body);
 
   try {
-    const user = await prismadb.user.update({
-      where: { id: params.userId },
+    const pc = await prismadb.pc.update({
+      where: { id },
       data: {
-        email,
-        pass,
-        rut,
+        id,
         name,
-        role,
+        model,
+        brand,
+        status,
+        laboratory_id,
       },
     });
 
-    if (!user) {
-      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+    if (!pc) {
+      return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }
 
     return NextResponse.json({ status: 201 }, { headers: corsHeaders });
@@ -94,12 +66,17 @@ export async function DELETE(
   }
 
   try {
-    const user = await prismadb.user.delete({
-      where: { id: params.userId },
+    const body = await req.json();
+    const { id } = body;
+
+    console.log(body);
+
+    const pc = await prismadb.pc.delete({
+      where: { id },
     });
 
-    if (!user) {
-      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+    if (!pc) {
+      return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }
 
     return NextResponse.json({ status: 201 }, { headers: corsHeaders });
