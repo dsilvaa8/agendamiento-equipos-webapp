@@ -3,8 +3,9 @@ import { createLaboratories, createUsers } from "./backup.mjs";
 
 const prisma = new PrismaClient();
 
-//npx ts-node prisma/script.mjs
+// npx ts-node prisma/script.mjs
 async function main() {
+  // Resetea la base de datos
   createUsers(prisma);
   createLaboratories(prisma);
 }

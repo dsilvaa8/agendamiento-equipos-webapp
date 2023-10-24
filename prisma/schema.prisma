@@ -32,7 +32,7 @@ model User {
 
 model Laboratory {
   id              String       @id @default(uuid())
-  number          Int          @unique @default(autoincrement())
+  number          Int          @unique
   status          Boolean      @default(true)
   pcs             Pc[]  
 }
