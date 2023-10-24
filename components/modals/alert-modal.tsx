@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -39,8 +40,17 @@ export const AlertModal: React.FC<AlertModalProps> = ({
         <Button disabled={loading} variant="outline" onClick={onClose}>
           Cancelar
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Confirmar
+        <Button
+          disabled={loading}
+          variant="destructive"
+          onClick={onConfirm}
+          className="w-full"
+        >
+          {loading ? (
+            <ReloadIcon className="h-4 w-4 animate-spin" />
+          ) : (
+            "Confirmar"
+          )}
         </Button>
       </div>
     </Modal>

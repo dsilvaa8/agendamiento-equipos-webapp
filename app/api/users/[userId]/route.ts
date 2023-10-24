@@ -56,8 +56,6 @@ export async function PATCH(
   const body = await req.json();
   const { email, pass, rut, name, role } = body;
 
-  console.log(body);
-
   try {
     const user = await prismadb.user.update({
       where: { id: params.userId },

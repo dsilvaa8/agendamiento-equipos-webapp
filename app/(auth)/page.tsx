@@ -50,7 +50,6 @@ export default function LoginCard() {
       const response = await axios.post("/api/auth/login", values);
 
       const data = await response.data;
-      console.log(data);
 
       if (data.status === 401) {
         alert("No autorizado");
@@ -60,7 +59,9 @@ export default function LoginCard() {
         alert("Clave incorrecta");
       }
 
-      router.push("/admin");
+      if (data.status === 200) {
+        return router.push("/admin");
+      }
     } catch (e) {
       const error = e as AxiosError;
       alert(error.message);
@@ -86,7 +87,11 @@ export default function LoginCard() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="email" {...field} />
+                      <Input
+                        placeholder="email"
+                        disabled={loading}
+                        {...field}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -101,6 +106,7 @@ export default function LoginCard() {
                       <Input
                         type="password"
                         placeholder="contraseña"
+                        disabled={loading}
                         {...field}
                       />
                     </FormControl>

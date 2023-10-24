@@ -27,8 +27,6 @@ export async function PATCH(
   const body = await req.json();
   const { id, name, model, brand, status, laboratory_id } = body;
 
-  console.log(body);
-
   try {
     const pc = await prismadb.pc.update({
       where: { id },
@@ -55,7 +53,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: { pc_id: string } }
 ) {
   const auth = await apiAuth(req);
   if (!auth) {
@@ -66,13 +64,8 @@ export async function DELETE(
   }
 
   try {
-    const body = await req.json();
-    const { id } = body;
-
-    console.log(body);
-
     const pc = await prismadb.pc.delete({
-      where: { id },
+      where: { id: params.pc_id },
     });
 
     if (!pc) {

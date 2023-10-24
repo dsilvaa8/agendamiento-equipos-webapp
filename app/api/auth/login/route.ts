@@ -10,8 +10,6 @@ export async function POST(request: Request) {
 
   const { email, pass } = body;
 
-  console.log(body);
-
   try {
     const user = await prismadb.user.findUnique({
       where: {
@@ -60,8 +58,6 @@ export async function POST(request: Request) {
       expiresIn: MAX_AGE,
     });
 
-    console.log(token);
-
     const seralized = serialize("session", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -70,14 +66,12 @@ export async function POST(request: Request) {
       path: "/",
     });
 
-    const response = {
-      message: "Authenticated!",
-    };
-
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: { "Set-Cookie": seralized },
-    });
+    return NextResponse.json(
+      { status: 200 },
+      {
+        headers: { "Set-Cookie": seralized },
+      }
+    );
   } catch (error) {
     return new Response(JSON.stringify({ error: "Error de servidor" }), {
       status: 500,

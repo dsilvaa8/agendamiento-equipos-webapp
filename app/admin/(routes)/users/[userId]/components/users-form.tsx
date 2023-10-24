@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { getUser } from "@/lib/serverUtils";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -45,13 +46,12 @@ type UserFormValues = z.infer<typeof formSchema>;
 
 interface UserFormProps {
   initialData: User | null;
+  user: any;
 }
 
-export const UsersForm: React.FC<UserFormProps> = ({ initialData }) => {
+export const UsersForm: React.FC<UserFormProps> = ({ initialData, user }) => {
   const params = useParams();
   const router = useRouter();
-
-  console.log(initialData);
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,8 +75,6 @@ export const UsersForm: React.FC<UserFormProps> = ({ initialData }) => {
   });
 
   const onSubmit = async (data: UserFormValues) => {
-    console.log(params.userId);
-    console.log(data);
     try {
       setLoading(true);
       if (initialData) {
@@ -245,9 +243,21 @@ export const UsersForm: React.FC<UserFormProps> = ({ initialData }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="JEFE">Jefe de laboratorio</SelectItem>
-                      <SelectItem value="ADMIN">Admin</SelectItem>
-                      <SelectItem value="ENCARGADO">Encargado</SelectItem>
+                      {user.role === "ADMIN" && (
+                        <>
+                          <SelectItem value="JEFE">
+                            Jefe de laboratorio
+                          </SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                          <SelectItem value="ENCARGADO">Encargado</SelectItem>
+                        </>
+                      )}
+
+                      {user.role === "JEFE" && (
+                        <>
+                          <SelectItem value="ENCARGADO">Encargado</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />

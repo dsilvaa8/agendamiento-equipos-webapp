@@ -50,14 +50,22 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   try {
+    const laboratories = await prismadb.laboratory.findMany({});
+
+    const numeroMayor = Math.max(
+      ...laboratories.map((objeto) => objeto.number)
+    );
+
     const laboratory = await prismadb.laboratory.create({
       data: {
-        number: body.number,
+        status: body.status,
+        number: parseInt(numeroMayor.toString()) + 1,
       },
     });
     if (!laboratory) {
       return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }
+    console.log(laboratory);
 
     return NextResponse.json(laboratory, { headers: corsHeaders, status: 201 });
   } catch (error) {

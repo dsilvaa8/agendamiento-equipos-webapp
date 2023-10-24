@@ -1,46 +1,145 @@
 "use client";
 
-import * as z from "zod";
+import { Laboratory, Pc } from "@prisma/client";
 import axios from "axios";
+import { Trash } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+
+import { AlertModal } from "@/components/modals/alert-modal";
+import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+
+import { Card } from "@/components/ui/card";
+import { ReloadIcon } from "@radix-ui/react-icons";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { Trash } from "lucide-react";
-import { Laboratory, Pc } from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+import * as z from "zod";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
-import { AlertModal } from "@/components/modals/alert-modal";
-
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface LaboratoryFormProps {
   initialData: {
     id: string; // Asumiendo que el ID es una cadena (string)
+    number: number;
     pcs: Pc[]; // Un arreglo de objetos de tipo Pc
   } | null;
 }
+
+const FormSchema = z.object({
+  name: z.string(),
+  model: z.string(),
+  brand: z.string(),
+  status: z.boolean(),
+  laboratory_id: z.string().optional(),
+});
 
 export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
   initialData,
 }) => {
   const params = useParams();
   const router = useRouter();
+  const [openPc, setOpenPc] = useState(false);
+  const [initialDataPc, setInitialDataPc] = useState<Pc | null>(null);
 
-  console.log(initialData);
+  const pcTitle = initialDataPc ? "Editar Notebook" : "Crear Notebook";
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      model: "",
+      brand: "",
+      status: true,
+      laboratory_id: "",
+    },
+  });
+
+  if (initialDataPc) {
+    form.setValue("name", initialDataPc?.name);
+    form.setValue("model", initialDataPc?.model);
+    form.setValue("brand", initialDataPc?.brand);
+    form.setValue("status", initialDataPc?.status);
+    form.setValue("laboratory_id", initialDataPc?.laboratory_id);
+  }
+  const resetDataPc = () => {
+    form.setValue("name", "");
+    form.setValue("model", "");
+    form.setValue("brand", "");
+    form.setValue("status", true);
+    form.setValue("laboratory_id", "");
+  };
+
+  const submitNotebook: any = async (data: z.infer<typeof FormSchema>) => {
+    setLoading(true);
+
+    try {
+      await axios.post(
+        `/api/pcs`,
+        {
+          name: data.name,
+          model: data.model,
+          brand: data.brand,
+          status: true,
+          laboratory_id: params.laboratory_id.toString(),
+        },
+        {
+          headers: {
+            Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      router.refresh();
+      toast.success("Notebook creado");
+      setOpenPc(false);
+    } catch (error) {
+      toast.error("Algo salió mal");
+    }
+    setLoading(false);
+  };
+
+  const handleDeletePc = async (pc: Pc) => {
+    setLoading(true);
+
+    try {
+      await axios.delete(`/api/pcs/${pc.id}`, {
+        headers: {
+          Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+          "Content-Type": "application/json",
+        },
+      });
+      router.refresh();
+      toast.success("Notebook eliminado");
+    } catch (error) {
+      toast.error("Algo salió mal");
+    }
+    setLoading(false);
+  };
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,12 +157,16 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
     try {
       setLoading(true);
 
-      await axios.post(`/api/laboratories`, {
-        headers: {
-          Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.post(
+        `/api/laboratories`,
+        { status: true },
+        {
+          headers: {
+            Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       router.refresh();
       router.push(`/admin/laboratories`);
@@ -78,7 +181,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/laboratories/${params.Laboratory_id}`, {
+      await axios.delete(`/api/laboratories/${params.laboratory_id}`, {
         headers: {
           Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
           "Content-Type": "application/json",
@@ -86,7 +189,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
       });
       router.refresh();
       router.push(`/admin/laboratories`);
-      toast.success("Usuario eliminado.");
+      toast.success("Laboratorio eliminado.");
     } catch (error: any) {
       toast.error("Algo salió mal.");
     } finally {
@@ -116,48 +219,180 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
           </Button>
         )}
       </div>
-      <Separator />
+
       <div>
-        <div className="flex flex-col">
-          <p>Laboratiorio: {initialData?.number}</p>
-          <p>Notebooks de este laboratorio:</p>
-        </div>
+        {initialData && (
+          <>
+            <Separator />
+            <div className="flex flex-col">
+              <p>Laboratiorio: {initialData.number}</p>
+              <p>Notebooks de este laboratorio:</p>
+            </div>
 
-        <div className="flex md:flex-row flex-col pt-5 pb-3 gap-3">
-          {initialData?.pcs.map((pc) => (
-            <Card key={pc.id} className="p-5 w-full md:min-w-1/4 md:w-auto">
-              <div className="flex gap-4">
-                <div>
-                  <div className="flex justify-between">
-                    <p>Notebook:</p>
+            <div className="flex md:flex-row flex-col pt-5 pb-3 gap-3">
+              {initialData.pcs.map((pc) => (
+                <Card key={pc.id} className="p-5 w-full md:min-w-1/4 md:w-auto">
+                  <div>
+                    <div className="flex justify-between">
+                      <p>Notebook:</p>
+                    </div>
+                    <div className="flex flex-col py-3">
+                      <p>Nombre: {pc.name}</p>
+                      <p>Modelo: {pc.model}</p>
+                      <p>Modelo: {pc.brand}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col py-3">
-                    <p>Nombre: {pc.name}</p>
-                    <p>Modelo: {pc.model}</p>
-                    <p>Modelo: {pc.brand}</p>
-                  </div>
-                </div>
-                <div>
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRANj8e9TV6A-RXuvMZ4zXJvuEMCei6T_mylw"
-                    alt="img"
-                    className="aspect-ratio-1/1 w-[110px]"
-                  />
-                </div>
-              </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button className="w-full">Editar</Button>
-                <Button className="w-full">Eliminar</Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-        <Button className="w-full md:w-1/4">Agregar notebook</Button>
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      disabled={loading}
+                      className="w-full"
+                      onClick={() => {
+                        setOpenPc(true);
+                        setInitialDataPc(pc);
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      disabled={loading}
+                      className="w-full"
+                      onClick={() => {
+                        setInitialDataPc(pc);
+                        handleDeletePc(pc);
+                      }}
+                    >
+                      {loading ? (
+                        <ReloadIcon className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Eliminar"
+                      )}
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            <AlertDialog open={openPc}>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={loading}
+                  className="w-full md:w-1/4"
+                  onClick={() => {
+                    resetDataPc();
+                    setOpenPc(true);
+                  }}
+                >
+                  Agregar notebook
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(submitNotebook)}
+                    className="w-full space-y-6"
+                  >
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{pcTitle}</AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nombre</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="model"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Modelo</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="brand"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Marca</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Estado</FormLabel>
+                          <FormControl>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                defaultChecked={initialDataPc?.status}
+                              />
+                              <label
+                                htmlFor="terms"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Estado del notebook (Disponible o no disponible)
+                              </label>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <AlertDialogFooter>
+                      <Button
+                        variant={"outline"}
+                        className="w-full"
+                        disabled={loading}
+                        type="button"
+                        onClick={() => {
+                          setOpenPc(false);
+                          setInitialDataPc(null);
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full"
+                      >
+                        {loading ? (
+                          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          "Crear"
+                        )}
+                      </Button>
+                    </AlertDialogFooter>
+                  </form>
+                </Form>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
       <Separator />
       <div className="flex gap-3">
         <Button
+          variant={"outline"}
           disabled={loading}
           type="button"
           onClick={() => {

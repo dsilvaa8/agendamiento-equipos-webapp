@@ -22,10 +22,15 @@ interface CellActionProps {
   data: LaboratoryColumn;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const getUser = async () => {
+    const { data } = await axios.get("/api/auth/validateCookie");
+    return data.user;
+  };
+  const user = await getUser();
 
   const onConfirm = async () => {
     try {
@@ -76,12 +81,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             onClick={() => router.push(`/admin/laboratories/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4 cursor-pointer" />{" "}
-            <p className="cursor-pointer">Editar</p>
+            <p className="cursor-pointer">Detalles</p>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
-            <p className="cursor-pointer"> Eliminar</p>
-          </DropdownMenuItem>
+          {user.role === "JEFE" && (
+            <DropdownMenuItem onClick={() => setOpen(true)}>
+              <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
+              <p className="cursor-pointer"> Eliminar</p>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

@@ -22,7 +22,7 @@ interface CellActionProps {
   data: UsersColum;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,6 +51,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     toast.success("Id copiado.");
   };
 
+  const getUser = async () => {
+    const { data } = await axios.get("/api/auth/validateCookie");
+    return data.user;
+  };
+  const user = await getUser();
+
   return (
     <>
       <AlertModal
@@ -72,16 +78,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <Copy className="mr-2 h-4 w-4 cursor-pointer" />{" "}
             <p className="cursor-pointer">Copiar Id</p>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/admin/users/${data.id}`)}
-          >
-            <Edit className="mr-2 h-4 w-4 cursor-pointer" />{" "}
-            <p className="cursor-pointer">Editar</p>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
-            <p className="cursor-pointer"> Eliminar</p>
-          </DropdownMenuItem>
+
+          {user.role !== "ENCARGADO" && (
+            <>
+              <DropdownMenuItem
+                onClick={() => router.push(`/admin/users/${data.id}`)}
+              >
+                <Edit className="mr-2 h-4 w-4 cursor-pointer" />{" "}
+                <p className="cursor-pointer">Editar</p>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
+                <p className="cursor-pointer"> Eliminar</p>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

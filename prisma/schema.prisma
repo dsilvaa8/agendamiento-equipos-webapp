@@ -33,6 +33,7 @@ model User {
 model Laboratory {
   id              String       @id @default(uuid())
   number          Int          @unique @default(autoincrement())
+  status          Boolean      @default(true)
   pcs             Pc[]  
 }
 

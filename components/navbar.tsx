@@ -65,18 +65,21 @@ const NavBar = (user: any) => {
               Usuarios
             </Link>
           </NavbarItem>
-          <NavbarItem>
-            <Link
-              href="/admin/laboratories"
-              className={`text-xl ${
-                pathname === "/admin/laboratories"
-                  ? "text-red-600"
-                  : "foreground"
-              }`}
-            >
-              Laboratorios
-            </Link>
-          </NavbarItem>
+
+          {user.user.role !== "ADMIN" && (
+            <NavbarItem>
+              <Link
+                href="/admin/laboratories"
+                className={`text-xl ${
+                  pathname === "/admin/laboratories"
+                    ? "text-red-600"
+                    : "foreground"
+                }`}
+              >
+                Laboratorios
+              </Link>
+            </NavbarItem>
+          )}
         </NavbarContent>
 
         <NavbarContent justify="end">
@@ -99,18 +102,21 @@ const NavBar = (user: any) => {
               Usuarios
             </Link>
           </NavbarMenuItem>
-          <NavbarMenuItem>
-            <Link
-              href="/admin/laboratories"
-              className={`text-xl ${
-                pathname === "/admin/laboratories"
-                  ? "text-red-600"
-                  : "foreground"
-              }`}
-            >
-              Laboratorios
-            </Link>
-          </NavbarMenuItem>
+
+          {user.user.role !== "ADMIN" && (
+            <NavbarMenuItem>
+              <Link
+                href="/admin/laboratories"
+                className={`text-xl ${
+                  pathname === "/admin/laboratories"
+                    ? "text-red-600"
+                    : "foreground"
+                }`}
+              >
+                Laboratorios
+              </Link>
+            </NavbarMenuItem>
+          )}
         </NavbarMenu>
       </Navbar>
 

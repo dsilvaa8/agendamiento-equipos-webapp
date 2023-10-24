@@ -39,10 +39,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { laboratory_id: string } }
-) {
+export async function POST(req: NextRequest) {
   const auth = await apiAuth(req);
   if (!auth) {
     return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
@@ -52,11 +49,11 @@ export async function POST(
   }
 
   const body = await req.json();
-  const { name, model, brand, status } = body;
+  const { name, model, brand, status, laboratory_id } = body;
 
   try {
     const laboratory = await prismadb.laboratory.findUnique({
-      where: { id: params.laboratory_id },
+      where: { id: laboratory_id },
     });
 
     if (!laboratory) {
@@ -69,7 +66,7 @@ export async function POST(
         model,
         brand,
         status,
-        laboratory_id: params.laboratory_id,
+        laboratory_id: laboratory_id,
       },
     });
     if (!pc) {
