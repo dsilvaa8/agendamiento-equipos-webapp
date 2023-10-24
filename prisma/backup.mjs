@@ -58,6 +58,13 @@ export async function createLaboratories(prisma) {
         laboratory_id: laboratorio1.id,
       },
       {
+        name: "Laptop de prueba",
+        model: "ThinkPad X1 Carbon",
+        brand: "Lenovo",
+        status: true,
+        laboratory_id: laboratorio1.id,
+      },
+      {
         name: "Laptop de trabajo",
         model: "ThinkPad X1 Carbon",
         brand: "Lenovo",
