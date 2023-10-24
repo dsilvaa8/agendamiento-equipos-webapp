@@ -3,7 +3,7 @@ import { exec } from "child_process";
 
 const executeCommand = util.promisify(exec);
 
-// node prisma/resetdb.mjs
+
 export async function resetDB(directory) {
   try {
     // Cambiar al directorio especificado

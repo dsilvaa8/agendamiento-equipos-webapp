@@ -229,50 +229,6 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
               <p>Notebooks de este laboratorio:</p>
             </div>
 
-            <div className="flex md:flex-row flex-col pt-5 pb-3 gap-3">
-              {initialData.pcs.map((pc) => (
-                <Card key={pc.id} className="p-5 w-full md:min-w-1/4 md:w-auto">
-                  <div>
-                    <div className="flex justify-between">
-                      <p>Notebook:</p>
-                    </div>
-                    <div className="flex flex-col py-3">
-                      <p>Nombre: {pc.name}</p>
-                      <p>Modelo: {pc.model}</p>
-                      <p>Modelo: {pc.brand}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3 pt-4">
-                    <Button
-                      disabled={loading}
-                      className="w-full"
-                      onClick={() => {
-                        setOpenPc(true);
-                        setInitialDataPc(pc);
-                      }}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      disabled={loading}
-                      className="w-full"
-                      onClick={() => {
-                        setInitialDataPc(pc);
-                        handleDeletePc(pc);
-                      }}
-                    >
-                      {loading ? (
-                        <ReloadIcon className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Eliminar"
-                      )}
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
             <AlertDialog open={openPc}>
               <AlertDialogTrigger asChild>
                 <Button
@@ -386,6 +342,50 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                 </Form>
               </AlertDialogContent>
             </AlertDialog>
+
+            <div className="flex md:flex-row flex-col pt-5 pb-3 gap-3">
+              {initialData.pcs.map((pc) => (
+                <Card key={pc.id} className="p-5 w-full md:min-w-1/4 md:w-auto">
+                  <div>
+                    <div className="flex justify-between">
+                      <p>Notebook:</p>
+                    </div>
+                    <div className="flex flex-col py-3">
+                      <p>Nombre: {pc.name}</p>
+                      <p>Modelo: {pc.model}</p>
+                      <p>Modelo: {pc.brand}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      disabled={loading}
+                      className="w-full"
+                      onClick={() => {
+                        setOpenPc(true);
+                        setInitialDataPc(pc);
+                      }}
+                    >
+                      Editar
+                    </Button>
+                    <Button
+                      disabled={loading}
+                      className="w-full"
+                      onClick={() => {
+                        setInitialDataPc(pc);
+                        handleDeletePc(pc);
+                      }}
+                    >
+                      {loading ? (
+                        <ReloadIcon className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Eliminar"
+                      )}
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </>
         )}
       </div>

@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     if (!laboratory) {
       return NextResponse.json({ status: 400 }, { headers: corsHeaders });
     }
-    console.log(laboratory);
+    //console.log(laboratory);
 
     return NextResponse.json(laboratory, { headers: corsHeaders, status: 201 });
   } catch (error) {

@@ -39,8 +39,8 @@ export const LaboratoryClient: React.FC<UsersClientProps> = async ({
       </div>
       <Separator />
       <DataTable
-        searchKey="id"
-        searchPlaceHolder="Buscar laboratorio por id"
+        searchKey="number"
+        searchPlaceHolder="Buscar laboratorio por numero"
         columns={columns}
         data={data}
       />
