@@ -93,30 +93,65 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
     form.setValue("status", true);
     form.setValue("laboratory_id", "");
   };
+  const setDataPc = (data: any) => {
+    form.setValue("name", data.name);
+    form.setValue("model", data.model);
+    form.setValue("brand", data.brand);
+    form.setValue("status", data.status);
+    form.setValue("laboratory_id", data.laboratory_id);
+  };
 
   const submitNotebook: any = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
 
     try {
-      await axios.post(
-        `/api/pcs`,
-        {
-          name: data.name,
-          model: data.model,
-          brand: data.brand,
-          status: true,
-          laboratory_id: params.laboratory_id.toString(),
-        },
-        {
-          headers: {
-            Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
-            "Content-Type": "application/json",
+      if (initialDataPc) {
+        await axios.patch(
+          `/api/pcs/${initialDataPc.id}`,
+          {
+            name: data.name,
+            model: data.model,
+            brand: data.brand,
+            status: data.status,
+            laboratory_id: params.laboratory_id.toString(),
           },
-        }
-      );
-      router.refresh();
-      toast.success("Notebook creado");
-      setOpenPc(false);
+          {
+            headers: {
+              Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setOpenPc(false);
+
+        router.refresh();
+        toast.success("Notebook Actualizado");
+
+        resetDataPc();
+      } else {
+        resetDataPc();
+        await axios.post(
+          `/api/pcs`,
+          {
+            name: data.name,
+            model: data.model,
+            brand: data.brand,
+            status: data.status,
+            laboratory_id: params.laboratory_id.toString(),
+          },
+          {
+            headers: {
+              Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        router.refresh();
+        toast.success("Notebook creado");
+        setOpenPc(false);
+
+        resetDataPc();
+      }
     } catch (error) {
       toast.error("Algo salió mal");
     }
@@ -151,7 +186,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
   const toastMessage = initialData
     ? "laboratorio modificado."
     : "laboratorio creado.";
-  const action = initialData ? "Guardar cambios" : "Crear";
+  const action = initialData ? "Guardar" : "Crear";
 
   const onSubmit = async () => {
     try {
@@ -326,6 +361,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                       >
                         Cancelar
                       </Button>
+
                       <Button
                         type="submit"
                         disabled={loading}
@@ -333,6 +369,8 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                       >
                         {loading ? (
                           <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        ) : initialDataPc ? (
+                          "Guardar"
                         ) : (
                           "Crear"
                         )}
@@ -350,6 +388,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                     <div className="flex justify-between">
                       <p>Notebook:</p>
                     </div>
+                    editar
                     <div className="flex flex-col py-3">
                       <p>Nombre: {pc.name}</p>
                       <p>Modelo: {pc.model}</p>
@@ -401,18 +440,6 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
           className="w-full md:w-1/4"
         >
           Cancelar
-        </Button>
-
-        <Button
-          disabled={loading}
-          onClick={onSubmit}
-          className="w-full md:w-1/4"
-        >
-          {loading ? (
-            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            action
-          )}
         </Button>
       </div>
     </>

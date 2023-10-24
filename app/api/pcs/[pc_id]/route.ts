@@ -14,7 +14,7 @@ export async function OPTIONS() {
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: { pc_id: string } }
 ) {
   const auth = await apiAuth(req);
   if (!auth) {
@@ -25,13 +25,12 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { id, name, model, brand, status, laboratory_id } = body;
+  const { name, model, brand, status, laboratory_id } = body;
 
   try {
     const pc = await prismadb.pc.update({
-      where: { id },
+      where: { id: params.pc_id },
       data: {
-        id,
         name,
         model,
         brand,
