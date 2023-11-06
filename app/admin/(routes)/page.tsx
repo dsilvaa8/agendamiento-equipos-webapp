@@ -1,11 +1,14 @@
 import { getUser } from "@/lib/serverUtils";
+import { Overview } from "@/components/overview";
 
 const DashboardPage = () => {
   const user = getUser();
 
   return (
-    <div className="h-auto min-h-screen mx-auto w-full max-w-screen-xl px-2.5 md:px-20">
+    <div className="flex flex-col mx-auto w-full items-center justify-between gap-3 py-5">
       <h2>Bienvenido {user.name}</h2>
+
+      <Overview />
     </div>
   );
 };

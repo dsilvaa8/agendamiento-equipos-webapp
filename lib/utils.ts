@@ -6,7 +6,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatter = new Intl.NumberFormat("es-CL", {
-  style: "currency",
-  currency: "CLP",
-});
+export const formatedRut = (rut: string) => {
+  // Elimina cualquier guión o punto del RUT y lo convierte a mayúsculas
+  rut = rut
+    .replace(/\./g, "")
+    .replace(/-/g, "")
+    .replace(/[^0-9kK-]/g, "")
+    .toUpperCase();
+
+  if (rut.length < 2) {
+    return rut;
+  }
+
+  // Separa el RUT en su parte numérica y su dígito verificador
+  const rutPart = rut.slice(0, -1);
+  const verificador = rut.slice(-1);
+
+  // Combina la parte numérica del RUT con el dígito verificador y guión
+  return rutPart + "-" + verificador;
+};

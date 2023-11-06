@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { getUser } from "@/lib/serverUtils";
+import { formatedRut } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(2),
@@ -120,6 +121,13 @@ export const UsersForm: React.FC<UserFormProps> = ({ initialData, user }) => {
       setLoading(false);
       setOpen(false);
     }
+  };
+
+  const handleInputChangeRut = (event: any) => {
+    const { value } = event.target;
+
+    form.setValue("rut", formatedRut(value));
+    //console.log(form.getValues());
   };
 
   return (
@@ -215,10 +223,11 @@ export const UsersForm: React.FC<UserFormProps> = ({ initialData, user }) => {
                   <FormLabel>RUT</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={loading}
                       placeholder="RUT"
-                      {...field}
                       type="text"
+                      {...field}
+                      onChange={handleInputChangeRut}
+                      maxLength={10}
                     />
                   </FormControl>
                   <FormMessage />
