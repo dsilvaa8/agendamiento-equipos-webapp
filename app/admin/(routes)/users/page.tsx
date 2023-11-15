@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 const UsersPage = async () => {
   const user = getUser();
 
-  if (user.role === "ADMIN") {
+  if (user?.role === "ADMIN") {
     const users = await prismadb.user.findMany();
     if (!users) {
       return null;
@@ -28,7 +28,7 @@ const UsersPage = async () => {
     );
   }
 
-  if (user.role === "JEFE") {
+  if (user?.role === "JEFE") {
     const users = await prismadb.user.findMany({
       where: {
         role: "ENCARGADO",
@@ -52,7 +52,7 @@ const UsersPage = async () => {
       </div>
     );
   }
-  if (user.role === "ENCARGADO") {
+  if (user?.role === "ENCARGADO") {
     const users = await prismadb.user.findMany({
       where: {
         role: "ESTUDIANTE",
