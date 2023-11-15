@@ -32,10 +32,13 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { AlertDestructive } from "@/components/alert-destructive";
 
 export default function LoginCard() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [open, isOpen] = useState(false);
+  const [msg, setMsg] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,26 +54,29 @@ export default function LoginCard() {
 
       const data = await response.data;
 
-      if (data.status === 401) {
-        alert("No autorizado");
-      }
-
-      if (data.status === 409) {
-        alert("Clave incorrecta");
-      }
-
       if (data.status === 200) {
         return router.push("/admin");
       }
-    } catch (e) {
-      const error = e as AxiosError;
-      alert(error.message);
+    } catch (e: any) {
+      console.log(e.request.status);
+      if (e.request.status === 401) {
+        setMsg("No autorizado");
+        isOpen(true);
+      }
+
+      if (e.request.status === 409) {
+        setMsg("Clave incorrecta");
+        isOpen(true);
+      }
     }
     setLoading(false);
   };
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Card>
+        <div className="w-full">
+          <AlertDestructive msg={msg} Open={open} />
+        </div>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Ingrese sus datos</CardTitle>
           <CardDescription>

@@ -141,7 +141,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             name: data.name,
             model: data.model,
             brand: data.brand,
-            status: data.status === "1" ? true : false,
+            status: data.status === "true" ? true : false,
             laboratory_id: params.laboratory_id.toString(),
           },
           {
@@ -164,7 +164,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             name: data.name,
             model: data.model,
             brand: data.brand,
-            status: data.status === "1" ? true : false,
+            status: data.status === "true" ? true : false,
             laboratory_id: params.laboratory_id.toString(),
           },
           {
@@ -385,6 +385,13 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                           <Select
                             disabled={loading}
                             onValueChange={field.onChange}
+                            defaultValue={
+                              initialDataPc
+                                ? field.value.toString() === "true"
+                                  ? "true"
+                                  : "false"
+                                : undefined
+                            }
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -392,8 +399,10 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="1">Disponible</SelectItem>
-                              <SelectItem value="0">No Disponible</SelectItem>
+                              <SelectItem value="true">Disponible</SelectItem>
+                              <SelectItem value="false">
+                                No Disponible
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </FormItem>

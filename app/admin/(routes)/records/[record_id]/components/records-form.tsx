@@ -68,8 +68,6 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
   const description =
     "Si el notebook esta prestado entonces se actalizara el prestamo como devuelto";
 
-  const action = initialData ? "Guardar" : "Crear";
-
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       setLoading(true);
@@ -89,7 +87,8 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
       );
 
       router.refresh();
-      router.push(`/admin/records`);
+      //router.push(`/admin/records`);
+      form.reset();
       toast.success(prestamo.data.message);
     } catch (error: any) {
       toast.error("Algo salió mal.");

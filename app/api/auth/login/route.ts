@@ -28,6 +28,17 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log(user);
+    if (user.pass !== pass) {
+      return NextResponse.json(
+        {
+          message: "Clave incorrecta",
+        },
+        {
+          status: 409,
+        }
+      );
+    }
     const roles = ["ADMIN", "ENCARGADO", "JEFE"];
 
     if (!roles.includes(user.role)) {
@@ -37,17 +48,6 @@ export async function POST(request: Request) {
         },
         {
           status: 401,
-        }
-      );
-    }
-
-    if (user.pass !== pass) {
-      return NextResponse.json(
-        {
-          message: "Clave incorrecta",
-        },
-        {
-          status: 409,
         }
       );
     }
