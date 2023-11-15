@@ -5,25 +5,28 @@ export async function createUsers(prisma) {
         email: "admin@uandresbello.edu",
         pass: "admin",
         rut: "99999999-5",
-        name: "Admin",
+        name: "Nombre del admin",
         role: "ADMIN",
       },
       {
         email: "jefe@uandresbello.edu",
         pass: "jefe",
         rut: "99999999-2",
-        name: "jefe de laboratorio",
+        name: "Rodolfo Aravena",
         role: "JEFE",
       },
       {
+        email: "",
+        pass: "",
         rut: "99999999-9",
+        name: "",
         role: "ESTUDIANTE",
       },
       {
         email: "encargado@uandresbello.edu",
         pass: "encargado",
         rut: "99999999-3",
-        name: "Encargado",
+        name: "Nombre del encargado",
         role: "ENCARGADO",
       },
     ],
@@ -48,6 +51,7 @@ export async function createLaboratories(prisma) {
   await prisma.pc.createMany({
     data: [
       {
+        barcode: "075486089115",
         name: "Laptop principal",
         model: "an-515",
         brand: "Acer",
@@ -55,6 +59,7 @@ export async function createLaboratories(prisma) {
         laboratory_id: laboratorio1.id,
       },
       {
+        barcode: "075486089113",
         name: "Laptop de prueba",
         model: "ThinkPad X1 Carbon",
         brand: "Lenovo",
@@ -62,6 +67,7 @@ export async function createLaboratories(prisma) {
         laboratory_id: laboratorio1.id,
       },
       {
+        barcode: "075486089114",
         name: "Laptop de trabajo",
         model: "ThinkPad X1 Carbon",
         brand: "Lenovo",
@@ -69,6 +75,7 @@ export async function createLaboratories(prisma) {
         laboratory_id: laboratorio2.id,
       },
       {
+        barcode: "075486089116",
         name: "Laptop personal",
         model: "MacBook Air",
         brand: "Apple",
@@ -76,6 +83,7 @@ export async function createLaboratories(prisma) {
         laboratory_id: laboratorio3.id,
       },
       {
+        barcode: "075486089117",
         name: "Laptop gaming",
         model: "ROG Zephyrus",
         brand: "ASUS",

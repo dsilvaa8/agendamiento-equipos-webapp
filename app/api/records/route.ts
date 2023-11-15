@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { user_rut, pc_id } = body;
+  const { user_rut, pc_code } = body;
   console.log(body);
 
   try {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     const pc = await prismadb.pc.findUnique({
       where: {
-        id: pc_id,
+        barcode: pc_code,
       },
     });
 
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 
           if (studentRecords) {
             if (
-              studentRecords.pc_id === pc_id &&
+              studentRecords.pc_code === pc_code &&
               studentRecords.user_rut === user_rut
             ) {
               await prismadb.record.update({
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           } else {
             await prismadb.pc.update({
               where: {
-                id: pc_id,
+                barcode: pc_code,
               },
               data: {
                 status: false,
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
             await prismadb.record.create({
               data: {
                 user_rut,
-                pc_id,
+                pc_code,
               },
             });
 
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
           const record = await prismadb.record.findFirst({
             where: {
               user_rut,
-              pc_id,
+              pc_code,
               return_date: null,
             },
             orderBy: {
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
           if (record) {
             await prismadb.pc.update({
               where: {
-                id: pc_id,
+                barcode: pc_code,
               },
               data: {
                 status: true,
@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
 
             if (studentRecords) {
               if (
-                studentRecords.pc_id === pc_id &&
+                studentRecords.pc_code === pc_code &&
                 studentRecords.user_rut === user_rut
               ) {
                 await prismadb.record.update({
@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
             } else {
               await prismadb.pc.update({
                 where: {
-                  id: pc_id,
+                  barcode: pc_code,
                 },
                 data: {
                   status: false,
@@ -236,7 +236,7 @@ export async function POST(req: NextRequest) {
               await prismadb.record.create({
                 data: {
                   user_rut,
-                  pc_id,
+                  pc_code,
                 },
               });
 
@@ -252,7 +252,7 @@ export async function POST(req: NextRequest) {
             const record = await prismadb.record.findFirst({
               where: {
                 user_rut,
-                pc_id,
+                pc_code,
                 return_date: null,
               },
               orderBy: {
@@ -263,7 +263,7 @@ export async function POST(req: NextRequest) {
             if (record) {
               await prismadb.pc.update({
                 where: {
-                  id: pc_id,
+                  barcode: pc_code,
                 },
                 data: {
                   status: true,

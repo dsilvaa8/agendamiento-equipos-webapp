@@ -41,7 +41,7 @@ interface RecordsFormProps {
 
 const FormSchema = z.object({
   user_rut: z.string(),
-  pc_id: z.string(),
+  pc_code: z.string(),
 });
 
 export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
@@ -53,11 +53,11 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
     defaultValues: initialData
       ? {
           user_rut: initialData?.user.rut,
-          pc_id: initialData?.pc.id,
+          pc_code: initialData?.pc.barcode,
         }
       : {
           user_rut: "",
-          pc_id: "",
+          pc_code: "",
         },
   });
 
@@ -78,7 +78,7 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
         `/api/records`,
         {
           user_rut: data.user_rut,
-          pc_id: data.pc_id,
+          pc_code: data.pc_code,
         },
         {
           headers: {
@@ -176,7 +176,7 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
 
             <FormField
               control={form.control}
-              name="pc_id"
+              name="pc_code"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Codigo Notebook</FormLabel>
@@ -201,14 +201,14 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
                 router.push("/admin/records");
               }}
             >
-              Cancelar
+              Volver
             </Button>
 
             <Button disabled={loading} type="submit">
               {loading ? (
                 <ReloadIcon className="h-4 w-4 animate-spin" />
               ) : (
-                action
+                "Generar"
               )}
             </Button>
           </div>

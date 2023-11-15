@@ -27,6 +27,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -52,10 +60,11 @@ interface LaboratoryFormProps {
 }
 
 const FormSchema = z.object({
+  barcode: z.string(),
   name: z.string(),
   model: z.string(),
   brand: z.string(),
-  status: z.boolean(),
+  status: z.string(),
   laboratory_id: z.string().optional(),
 });
 
@@ -72,30 +81,67 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
     resolver: zodResolver(FormSchema),
   });
 
-  if (initialDataPc) {
+  function setDataPc(initialDataPc: any) {
+    form.setValue("barcode", initialDataPc?.barcode);
     form.setValue("name", initialDataPc?.name);
     form.setValue("model", initialDataPc?.model);
     form.setValue("brand", initialDataPc?.brand);
-    form.setValue("status", initialDataPc?.status);
+    form.setValue("status", initialDataPc?.status.toString());
     form.setValue("laboratory_id", initialDataPc?.laboratory_id);
   }
 
-  const resetDataPc = () => {
+  function resetForm() {
+    setInitialDataPc(null);
     form.reset();
+  }
+
+  const handleCreateNotebook: any = async () => {
+    setLoading(true);
+
+    try {
+      await axios.post(
+        `/api/pcs`,
+        {
+          barcode: form.getValues("barcode"),
+          name: form.getValues("name"),
+          model: form.getValues("model"),
+          brand: form.getValues("brand"),
+          status: form.getValues("status") === "1" ? true : false,
+          laboratory_id: params.laboratory_id.toString(),
+        },
+        {
+          headers: {
+            Authorization: process.env.NEXT_PUBLIC_API_ACCESS_TOKEN,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      resetForm();
+      setOpenPc(false);
+
+      router.refresh();
+
+      toast.success("Notebook creado");
+    } catch (error) {
+      toast.error("Algo salió mal");
+    }
+    setLoading(false);
   };
 
   const submitNotebook: any = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
+    console.log(data);
 
     try {
       if (initialDataPc) {
         await axios.patch(
           `/api/pcs/${initialDataPc.id}`,
           {
+            barcode: data.barcode,
             name: data.name,
             model: data.model,
             brand: data.brand,
-            status: data.status,
+            status: data.status === "1" ? true : false,
             laboratory_id: params.laboratory_id.toString(),
           },
           {
@@ -105,7 +151,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             },
           }
         );
-        resetDataPc();
+        resetForm();
         setOpenPc(false);
 
         router.refresh();
@@ -114,10 +160,11 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
         await axios.post(
           `/api/pcs`,
           {
+            barcode: data.barcode,
             name: data.name,
             model: data.model,
             brand: data.brand,
-            status: data.status,
+            status: data.status === "1" ? true : false,
             laboratory_id: params.laboratory_id.toString(),
           },
           {
@@ -127,10 +174,12 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             },
           }
         );
-        resetDataPc();
-        router.refresh();
-        toast.success("Notebook creado");
+        resetForm();
         setOpenPc(false);
+
+        router.refresh();
+
+        toast.success("Notebook creado");
       }
     } catch (error) {
       toast.error("Algo salió mal");
@@ -151,7 +200,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
       router.refresh();
       toast.success("Notebook eliminado");
 
-      resetDataPc();
+      resetForm();
     } catch (error) {
       toast.error("Algo salió mal");
     }
@@ -252,7 +301,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                 disabled={loading}
                 className="w-full md:w-1/4"
                 onClick={() => {
-                  resetDataPc();
+                  resetForm();
                   setOpenPc(true);
                 }}
               >
@@ -261,12 +310,34 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
               <AlertDialogContent>
                 <Form {...form}>
                   <form
-                    onSubmit={form.handleSubmit(submitNotebook)}
                     className="w-full space-y-6"
+                    onSubmit={form.handleSubmit(submitNotebook)}
                   >
                     <AlertDialogHeader>
                       <AlertDialogTitle>{pcTitle}</AlertDialogTitle>
                     </AlertDialogHeader>
+                    <FormField
+                      control={form.control}
+                      name="barcode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Codigo de barras</FormLabel>
+                          <FormControl>
+                            <Input
+                              disabled={loading}
+                              {...field}
+                              onKeyDown={(e) => {
+                                // Previene el envío cuando se presiona "Enter"
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                }
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="name"
@@ -274,7 +345,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                         <FormItem>
                           <FormLabel>Nombre</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input disabled={loading} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -287,7 +358,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                         <FormItem>
                           <FormLabel>Modelo</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input disabled={loading} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -300,7 +371,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                         <FormItem>
                           <FormLabel>Marca</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input disabled={loading} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -310,22 +381,28 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                       control={form.control}
                       name="status"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estado</FormLabel>
-                          <FormControl>
-                            <div className="flex items-center space-x-2">
-                              <Checkbox
-                                defaultChecked={initialDataPc?.status}
-                              />
-                              <label
-                                htmlFor="terms"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                              >
-                                Estado del notebook (Disponible o no disponible)
-                              </label>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
+                        <FormItem className="w-full">
+                          <Select
+                            disabled={loading}
+                            onValueChange={field.onChange}
+                            defaultValue={
+                              initialDataPc
+                                ? field.value.toString() === "true"
+                                  ? "1"
+                                  : "0"
+                                : "1"
+                            }
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="1">Disponible</SelectItem>
+                              <SelectItem value="0">No Disponible</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormItem>
                       )}
                     />
@@ -337,25 +414,40 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                         type="button"
                         onClick={() => {
                           setOpenPc(false);
-                          setInitialDataPc(null);
+                          resetForm();
                         }}
                       >
                         Cancelar
                       </Button>
 
-                      <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full"
-                      >
-                        {loading ? (
-                          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                        ) : initialDataPc ? (
-                          "Guardar"
-                        ) : (
-                          "Crear"
-                        )}
-                      </Button>
+                      {initialDataPc ? (
+                        <Button
+                          type="submit"
+                          disabled={loading}
+                          className="w-full"
+                        >
+                          {loading ? (
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            "Guardar"
+                          )}
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          disabled={loading}
+                          className="w-full"
+                          onClick={() => {
+                            handleCreateNotebook();
+                          }}
+                        >
+                          {loading ? (
+                            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            "Crear"
+                          )}
+                        </Button>
+                      )}
                     </AlertDialogFooter>
                   </form>
                 </Form>
@@ -371,9 +463,13 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                     </div>
 
                     <div className="flex flex-col py-3">
+                      <p>Código: {pc.barcode}</p>
                       <p>Nombre: {pc.name}</p>
                       <p>Modelo: {pc.model}</p>
-                      <p>Modelo: {pc.brand}</p>
+                      <p>Marca: {pc.brand}</p>
+                      <p>
+                        Estado: {pc.status ? "Disponible" : "No Disponible"}
+                      </p>
                     </div>
                   </div>
 
@@ -382,8 +478,9 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                       disabled={loading}
                       className="w-full"
                       onClick={() => {
-                        setOpenPc(true);
+                        setDataPc(pc);
                         setInitialDataPc(pc);
+                        setOpenPc(true);
                       }}
                     >
                       Editar

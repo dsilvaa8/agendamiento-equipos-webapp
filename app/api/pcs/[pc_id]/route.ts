@@ -27,12 +27,13 @@ export async function PATCH(
   const body = await req.json();
 
   console.log(body);
-  const { name, model, brand, status, laboratory_id } = body;
+  const { barcode, name, model, brand, status, laboratory_id } = body;
 
   try {
     const pc = await prismadb.pc.update({
       where: { id: params.pc_id },
       data: {
+        barcode,
         name,
         model,
         brand,

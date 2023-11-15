@@ -39,6 +39,7 @@ model Laboratory {
 // Modelo para la tabla "Pcs"
 model Pc {
   id         String   @id @default(uuid())
+  barcode    String   @unique
   name       String
   model      String
   brand      String
@@ -63,9 +64,9 @@ model Record {
   user_rut String
   user     User   @relation(fields: [user_rut], references: [rut])
 
-  pc_id String
-  pc    Pc     @relation(fields: [pc_id], references: [id])
+  pc_code String
+  pc      Pc     @relation(fields: [pc_code], references: [barcode])
 
   @@index([user_rut])
-  @@index([pc_id])
+  @@index([pc_code])
 }

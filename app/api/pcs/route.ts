@@ -49,8 +49,9 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, model, brand, status, laboratory_id } = body;
+  const { barcode, name, model, brand, status, laboratory_id } = body;
 
+  console.log(body);
   try {
     const laboratory = await prismadb.laboratory.findUnique({
       where: { id: laboratory_id },
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
     // Ahora, puedes conectar el Pc al Laboratorio utilizando el ID
     const pc = await prismadb.pc.create({
       data: {
+        barcode,
         name,
         model,
         brand,
