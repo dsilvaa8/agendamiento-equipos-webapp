@@ -16,10 +16,7 @@ export async function createUsers(prisma) {
         role: "JEFE",
       },
       {
-        email: "estudiante@uandresbello.edu",
-        pass: "admin",
         rut: "99999999-9",
-        name: "Estudiante",
         role: "ESTUDIANTE",
       },
       {

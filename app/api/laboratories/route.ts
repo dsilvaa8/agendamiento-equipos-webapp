@@ -15,7 +15,7 @@ export async function OPTIONS() {
 export async function GET(req: NextRequest) {
   const auth = await apiAuth(req);
   if (!auth) {
-    return new NextResponse(JSON.stringify({ error: "No acavacabacacbac" }), {
+    return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
     });

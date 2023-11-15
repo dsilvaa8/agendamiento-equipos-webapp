@@ -25,6 +25,8 @@ export async function PATCH(
   }
 
   const body = await req.json();
+
+  console.log(body);
   const { name, model, brand, status, laboratory_id } = body;
 
   try {

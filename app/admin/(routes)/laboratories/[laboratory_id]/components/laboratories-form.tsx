@@ -70,13 +70,6 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
   const pcTitle = initialDataPc ? "Editar Notebook" : "Crear Notebook";
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      name: "",
-      model: "",
-      brand: "",
-      status: true,
-      laboratory_id: "",
-    },
   });
 
   if (initialDataPc) {
@@ -86,19 +79,9 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
     form.setValue("status", initialDataPc?.status);
     form.setValue("laboratory_id", initialDataPc?.laboratory_id);
   }
+
   const resetDataPc = () => {
-    form.setValue("name", "");
-    form.setValue("model", "");
-    form.setValue("brand", "");
-    form.setValue("status", true);
-    form.setValue("laboratory_id", "");
-  };
-  const setDataPc = (data: any) => {
-    form.setValue("name", data.name);
-    form.setValue("model", data.model);
-    form.setValue("brand", data.brand);
-    form.setValue("status", data.status);
-    form.setValue("laboratory_id", data.laboratory_id);
+    form.reset();
   };
 
   const submitNotebook: any = async (data: z.infer<typeof FormSchema>) => {
@@ -122,14 +105,12 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             },
           }
         );
+        resetDataPc();
         setOpenPc(false);
 
         router.refresh();
         toast.success("Notebook Actualizado");
-
-        resetDataPc();
       } else {
-        resetDataPc();
         await axios.post(
           `/api/pcs`,
           {
@@ -146,11 +127,10 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             },
           }
         );
+        resetDataPc();
         router.refresh();
         toast.success("Notebook creado");
         setOpenPc(false);
-
-        resetDataPc();
       }
     } catch (error) {
       toast.error("Algo salió mal");
@@ -170,6 +150,8 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
       });
       router.refresh();
       toast.success("Notebook eliminado");
+
+      resetDataPc();
     } catch (error) {
       toast.error("Algo salió mal");
     }
@@ -241,6 +223,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
         onConfirm={onDelete}
         loading={loading}
       />
+
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -265,18 +248,16 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
             </div>
 
             <AlertDialog open={openPc}>
-              <AlertDialogTrigger asChild>
-                <Button
-                  disabled={loading}
-                  className="w-full md:w-1/4"
-                  onClick={() => {
-                    resetDataPc();
-                    setOpenPc(true);
-                  }}
-                >
-                  Agregar notebook
-                </Button>
-              </AlertDialogTrigger>
+              <Button
+                disabled={loading}
+                className="w-full md:w-1/4"
+                onClick={() => {
+                  resetDataPc();
+                  setOpenPc(true);
+                }}
+              >
+                Agregar notebook
+              </Button>
               <AlertDialogContent>
                 <Form {...form}>
                   <form
@@ -388,7 +369,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                     <div className="flex justify-between">
                       <p>Notebook:</p>
                     </div>
-                    editar
+
                     <div className="flex flex-col py-3">
                       <p>Nombre: {pc.name}</p>
                       <p>Modelo: {pc.model}</p>
@@ -411,7 +392,6 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                       disabled={loading}
                       className="w-full"
                       onClick={() => {
-                        setInitialDataPc(pc);
                         handleDeletePc(pc);
                       }}
                     >
@@ -429,7 +409,7 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
         )}
       </div>
       <Separator />
-      <div className="flex gap-3">
+      {initialData && (
         <Button
           variant={"outline"}
           disabled={loading}
@@ -439,9 +419,39 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
           }}
           className="w-full md:w-1/4"
         >
-          Cancelar
+          Volver
         </Button>
-      </div>
+      )}
+      {initialData === null && (
+        <div className="flex gap-3">
+          <Button
+            variant={"outline"}
+            disabled={loading}
+            type="button"
+            onClick={() => {
+              router.push("/admin/laboratories");
+            }}
+            className="w-full md:w-1/4"
+          >
+            Cancelar
+          </Button>
+
+          <Button
+            type="button"
+            disabled={loading}
+            className="w-1/3"
+            onClick={() => {
+              onSubmit();
+            }}
+          >
+            {loading ? (
+              <ReloadIcon className="h-4 w-4 animate-spin" />
+            ) : (
+              "Crear laboratorio"
+            )}
+          </Button>
+        </div>
+      )}
     </>
   );
 };

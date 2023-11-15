@@ -12,34 +12,10 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-export async function GET(req: NextRequest) {
-  const auth = await apiAuth(req);
-  if (!auth) {
-    return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  try {
-    const pcs = await prismadb.pc.findMany({
-      include: {
-        laboratory: true,
-      },
-    });
-
-    if (!pcs) {
-      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
-    }
-
-    return NextResponse.json(pcs);
-  } catch (error) {
-    console.error("Error al autenticar:", error);
-    return NextResponse.json({ error: 500 }, { headers: corsHeaders });
-  }
-}
-
-export async function POST(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { record_id: string } }
+) {
   const auth = await apiAuth(req);
   if (!auth) {
     return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
@@ -49,27 +25,73 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, model, brand, status, laboratory_id } = body;
 
   try {
-    const laboratory = await prismadb.laboratory.findUnique({
-      where: { id: laboratory_id },
+    const record = await prismadb.record.findUnique({
+      where: { id: params.record_id },
     });
-
-    if (!laboratory) {
+    if (!record) {
       return NextResponse.json({ status: 404 }, { headers: corsHeaders });
     }
-    // Ahora, puedes conectar el Pc al Laboratorio utilizando el ID
-    const pc = await prismadb.pc.create({
+    return NextResponse.json(record);
+  } catch (error) {
+    console.error("Error al autenticar:", error);
+    return NextResponse.json({ error: 500 }, { headers: corsHeaders });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { record_id: string } }
+) {
+  const auth = await apiAuth(req);
+  if (!auth) {
+    return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const body = await req.json();
+  const { return_date } = body;
+
+  try {
+    const record = await prismadb.record.update({
+      where: { id: params.record_id },
       data: {
-        name,
-        model,
-        brand,
-        status,
-        laboratory_id: laboratory_id,
+        return_date,
       },
     });
-    if (!pc) {
+
+    if (!record) {
+      return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+    }
+
+    return NextResponse.json({ status: 201 }, { headers: corsHeaders });
+  } catch (error) {
+    console.error("Error al autenticar:", error);
+    return NextResponse.json({ error: 500 }, { headers: corsHeaders });
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { record_id: string } }
+) {
+  const auth = await apiAuth(req);
+  if (!auth) {
+    return new NextResponse(JSON.stringify({ error: "No autenticado" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    const record = await prismadb.record.delete({
+      where: { id: params.record_id },
+    });
+
+    if (!record) {
       return NextResponse.json({ status: 404 }, { headers: corsHeaders });
     }
 

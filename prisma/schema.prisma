@@ -17,58 +17,55 @@ enum Role {
 
 // Modelo para la tabla "Users"
 model User {
-  id          String      @id @default(uuid())
-  email       String      @unique
-  pass        String
-  rut         String      @unique
-  name        String
-  created_at  DateTime    @default(now())
+  id         String   @id @default(uuid())
+  email      String   @unique
+  pass       String
+  rut        String   @unique
+  name       String
+  created_at DateTime @default(now())
 
-  records     Record[]
+  records Record[]
 
-  role        Role   
-
+  role Role
 }
 
 model Laboratory {
-  id              String       @id @default(uuid())
-  number          Int          @unique
-  status          Boolean      @default(true)
-  pcs             Pc[]  
+  id     String  @id @default(uuid())
+  number Int     @unique
+  status Boolean @default(true)
+  pcs    Pc[]
 }
 
 // Modelo para la tabla "Pcs"
 model Pc {
-  id              String    @id @default(uuid())
-  name            String
-  model           String
-  brand           String
-  status          Boolean
-  created_at      DateTime   @default(now())
+  id         String   @id @default(uuid())
+  name       String
+  model      String
+  brand      String
+  status     Boolean
+  created_at DateTime @default(now())
 
-  records         Record[]
-  
-  laboratory_id   String
-  laboratory      Laboratory @relation(fields: [laboratory_id], references: [id])
+  records Record[]
+
+  laboratory_id String
+  laboratory    Laboratory @relation(fields: [laboratory_id], references: [id])
 
   @@index([laboratory_id])
 }
 
 // Modelo para la tabla de relación "Records"
 model Record {
-  id          String      @id @default(uuid())
-  
-  loan_date   DateTime   @default(now())
+  id String @id @default(uuid())
+
+  loan_date   DateTime  @default(now())
   return_date DateTime?
 
-  user_id     String 
-  user        User       @relation(fields: [user_id], references: [id])
-  
-  pc_id       String 
-  pc          Pc         @relation(fields: [pc_id], references: [id])
-  
-  @@index([user_id])
+  user_rut String
+  user     User   @relation(fields: [user_rut], references: [rut])
+
+  pc_id String
+  pc    Pc     @relation(fields: [pc_id], references: [id])
+
+  @@index([user_rut])
   @@index([pc_id])
 }
-
-
