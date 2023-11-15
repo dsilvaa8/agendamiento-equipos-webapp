@@ -17,11 +17,7 @@ interface RecordsClientProps {
 
 export const RecordsClient: React.FC<RecordsClientProps> = async ({ data }) => {
   const router = useRouter();
-  const getUser = async () => {
-    const { data } = await axios.get("/api/auth/validateCookie");
-    return data.user;
-  };
-  const user = await getUser();
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -29,11 +25,10 @@ export const RecordsClient: React.FC<RecordsClientProps> = async ({ data }) => {
           title={`Prestamos (${data.length})`}
           description="Maneja los prestamos"
         />
-        {user.role === "JEFE" && (
-          <Button onClick={() => router.push(`/admin/records/new`)}>
-            <Plus className="mr-2 h-4 w-4" /> Prestar o devolver
-          </Button>
-        )}
+
+        <Button onClick={() => router.push(`/admin/records/new`)}>
+          <Plus className="mr-2 h-4 w-4" /> Prestar o devolver
+        </Button>
       </div>
       <Separator />
       <DataTable
@@ -42,7 +37,6 @@ export const RecordsClient: React.FC<RecordsClientProps> = async ({ data }) => {
         columns={columns}
         data={data}
       />
-      <Separator />
     </>
   );
 };

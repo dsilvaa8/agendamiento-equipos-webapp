@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { formatedRut } from "@/lib/utils";
 
 interface RecordsFormProps {
   initialData: {
@@ -117,6 +118,13 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
     }
   };
 
+  const handleInputChangeRut = (event: any) => {
+    const { value } = event.target;
+
+    form.setValue("user_rut", formatedRut(value));
+    //console.log(form.getValues());
+  };
+
   return (
     <>
       <AlertModal
@@ -154,9 +162,11 @@ export const RecordsForm: React.FC<RecordsFormProps> = ({ initialData }) => {
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="20324..."
-                      {...field}
+                      placeholder="RUT"
                       type="text"
+                      {...field}
+                      onChange={handleInputChangeRut}
+                      maxLength={10}
                     />
                   </FormControl>
                   <FormMessage />

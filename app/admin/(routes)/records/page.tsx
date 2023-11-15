@@ -27,7 +27,7 @@ const RecordsPage = async () => {
     return_date:
       item.return_date !== null ? formatDate(item.return_date) : "No devuelto",
     user: item.user.rut,
-    pc: item.pc.name,
+    pc: item.pc.id,
   }));
 
   function formatDate(date: Date | null): string {

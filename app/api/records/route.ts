@@ -63,95 +63,86 @@ export async function POST(req: NextRequest) {
 
     if (pc) {
       if (student) {
-        if (pc.status === false) {
-          await prismadb.pc.update({
+        if (pc.status === true) {
+          const studentRecords = await prismadb.record.findFirst({
             where: {
-              id: pc_id,
-            },
-            data: {
-              status: true,
+              user_rut, // El RUT del usuario que deseas verificar
+              return_date: null,
             },
           });
 
+          if (studentRecords) {
+            if (
+              studentRecords.pc_id === pc_id &&
+              studentRecords.user_rut === user_rut
+            ) {
+              await prismadb.record.update({
+                where: {
+                  id: studentRecords.id,
+                },
+                data: {
+                  return_date: new Date(),
+                },
+              });
+              return NextResponse.json(
+                { message: "Devolución exitosa" },
+                {
+                  headers: corsHeaders,
+                  status: 200,
+                }
+              );
+            }
+            return NextResponse.json(
+              { message: "Alumno tiene prestamos no devueltos" },
+              {
+                headers: corsHeaders,
+                status: 200,
+              }
+            );
+          } else {
+            await prismadb.pc.update({
+              where: {
+                id: pc_id,
+              },
+              data: {
+                status: false,
+              },
+            });
+
+            await prismadb.record.create({
+              data: {
+                user_rut,
+                pc_id,
+              },
+            });
+
+            return NextResponse.json(
+              { message: "Prestamo generado" },
+              {
+                headers: corsHeaders,
+                status: 201,
+              }
+            );
+          }
+        } else {
           const record = await prismadb.record.findFirst({
             where: {
               user_rut,
               pc_id,
+              return_date: null,
             },
             orderBy: {
               loan_date: "desc",
             },
           });
 
-          await prismadb.record.update({
-            where: {
-              id: record?.id,
-            },
-            data: {
-              return_date: new Date(),
-            },
-          });
-
-          return NextResponse.json(
-            { message: "Devolución exitosa" },
-            {
-              headers: corsHeaders,
-              status: 201,
-            }
-          );
-        } else {
-          await prismadb.pc.update({
-            where: {
-              id: pc_id,
-            },
-            data: {
-              status: false,
-            },
-          });
-          const record = await prismadb.record.create({
-            data: {
-              user_rut,
-              pc_id,
-            },
-          });
-
-          return NextResponse.json(
-            { message: "Prestamo generado" },
-            {
-              headers: corsHeaders,
-              status: 201,
-            }
-          );
-        }
-      } else {
-        const newStudent = await prismadb.user.create({
-          data: {
-            email: "",
-            pass: "",
-            rut: user_rut,
-            name: "",
-            role: "ESTUDIANTE",
-          },
-        });
-
-        if (newStudent) {
-          if (pc.status === false) {
+          if (record) {
             await prismadb.pc.update({
               where: {
                 id: pc_id,
               },
               data: {
                 status: true,
-              },
-            });
-
-            const record = await prismadb.record.findFirst({
-              where: {
-                user_rut,
-                pc_id,
-              },
-              orderBy: {
-                loan_date: "desc",
               },
             });
 
@@ -172,36 +163,148 @@ export async function POST(req: NextRequest) {
               }
             );
           } else {
-            await prismadb.pc.update({
-              where: {
-                id: pc_id,
-              },
-              data: {
-                status: false,
-              },
-            });
-
-            const record = await prismadb.record.create({
-              data: {
-                user_rut,
-                pc_id,
-              },
-            });
-
             return NextResponse.json(
-              { message: "Prestamo generado" },
+              { message: "Notebook no disponible" },
               {
                 headers: corsHeaders,
                 status: 201,
               }
             );
           }
+        }
+      } else {
+        const allUsers = await prismadb.user.findMany();
+        const totalUsers = allUsers.length;
+
+        const newStudent = await prismadb.user.create({
+          data: {
+            email: `estudiante${totalUsers + 1}@uandresbello.edu`,
+            pass: "",
+            rut: user_rut,
+            name: "",
+            role: "ESTUDIANTE",
+          },
+        });
+
+        if (newStudent) {
+          if (pc.status === true) {
+            const studentRecords = await prismadb.record.findFirst({
+              where: {
+                user_rut, // El RUT del usuario que deseas verificar
+                return_date: null,
+              },
+            });
+
+            if (studentRecords) {
+              if (
+                studentRecords.pc_id === pc_id &&
+                studentRecords.user_rut === user_rut
+              ) {
+                await prismadb.record.update({
+                  where: {
+                    id: studentRecords.id,
+                  },
+                  data: {
+                    return_date: new Date(),
+                  },
+                });
+                return NextResponse.json(
+                  { message: "Devolución exitosa" },
+                  {
+                    headers: corsHeaders,
+                    status: 200,
+                  }
+                );
+              }
+              return NextResponse.json(
+                { message: "Alumno tiene prestamos no devueltos" },
+                {
+                  headers: corsHeaders,
+                  status: 200,
+                }
+              );
+            } else {
+              await prismadb.pc.update({
+                where: {
+                  id: pc_id,
+                },
+                data: {
+                  status: false,
+                },
+              });
+
+              await prismadb.record.create({
+                data: {
+                  user_rut,
+                  pc_id,
+                },
+              });
+
+              return NextResponse.json(
+                { message: "Prestamo generado" },
+                {
+                  headers: corsHeaders,
+                  status: 201,
+                }
+              );
+            }
+          } else {
+            const record = await prismadb.record.findFirst({
+              where: {
+                user_rut,
+                pc_id,
+                return_date: null,
+              },
+              orderBy: {
+                loan_date: "desc",
+              },
+            });
+
+            if (record) {
+              await prismadb.pc.update({
+                where: {
+                  id: pc_id,
+                },
+                data: {
+                  status: true,
+                },
+              });
+
+              await prismadb.record.update({
+                where: {
+                  id: record?.id,
+                },
+                data: {
+                  return_date: new Date(),
+                },
+              });
+
+              return NextResponse.json(
+                { message: "Devolución exitosa" },
+                {
+                  headers: corsHeaders,
+                  status: 201,
+                }
+              );
+            } else {
+              return NextResponse.json(
+                { message: "Notebook no disponible" },
+                {
+                  headers: corsHeaders,
+                  status: 201,
+                }
+              );
+            }
+          }
         } else {
-          return NextResponse.json({ status: 400 }, { headers: corsHeaders });
+          return NextResponse.json({ headers: corsHeaders, status: 400 });
         }
       }
     }
-    return NextResponse.json({ status: 404 }, { headers: corsHeaders });
+    return NextResponse.json(
+      { message: "Notebook no encontrado" },
+      { headers: corsHeaders, status: 404 }
+    );
   } catch (error) {
     console.error("Error al autenticar:", error);
     return NextResponse.json({ error: 500 }, { headers: corsHeaders });

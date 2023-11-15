@@ -68,4 +68,8 @@ function mapPcsData(apiData: any[]): PcData[] {
   ];
 }
 
-export { mapLaboratoriesData, mapPcsData, formatedRut };
+function timeout(ms: any) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export { mapLaboratoriesData, mapPcsData, formatedRut, timeout };

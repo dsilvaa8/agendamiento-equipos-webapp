@@ -5,6 +5,7 @@ import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
+import { timeout } from "@/lib/utils";
 
 interface UserResponse {
   data: any | null;
@@ -21,17 +22,28 @@ export default function RootLayout({
   const { push } = useRouter();
 
   useEffect(() => {
-    (async () => {
-      const { data, error } = await getUser();
+    let isCancelled = false;
 
-      if (error) {
-        push("/");
-        return;
+    const fetchData = async () => {
+      await timeout(1000);
+
+      if (!isCancelled) {
+        const { data, error } = await getUser();
+
+        if (error) {
+          push("/");
+          return;
+        }
+        setIsSuccess(true);
+        setUser(data.user);
       }
-      setIsSuccess(true);
-      setUser(data.user);
-    })();
-  }, [push]);
+    };
+    fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   if (!isSuccess) {
     return <Loading />;

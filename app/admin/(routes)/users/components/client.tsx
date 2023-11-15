@@ -42,7 +42,6 @@ export const UsersClient: React.FC<UsersClientProps> = async ({ data }) => {
         columns={columns}
         data={data}
       />
-      <Separator />
     </>
   );
 };

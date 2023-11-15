@@ -24,6 +24,7 @@ export const LaboratoryClient: React.FC<UsersClientProps> = async ({
     return data.user;
   };
   const user = await getUser();
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -39,12 +40,11 @@ export const LaboratoryClient: React.FC<UsersClientProps> = async ({
       </div>
       <Separator />
       <DataTable
-        searchKey="number"
+        searchKey="id"
         searchPlaceHolder="Buscar laboratorio por numero"
         columns={columns}
         data={data}
       />
-      <Separator />
     </>
   );
 };
