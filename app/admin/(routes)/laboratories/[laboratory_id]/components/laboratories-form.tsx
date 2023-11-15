@@ -385,13 +385,6 @@ export const LaboratoriesForm: React.FC<LaboratoryFormProps> = ({
                           <Select
                             disabled={loading}
                             onValueChange={field.onChange}
-                            defaultValue={
-                              initialDataPc
-                                ? field.value.toString() === "true"
-                                  ? "1"
-                                  : "0"
-                                : "1"
-                            }
                           >
                             <FormControl>
                               <SelectTrigger>

@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 const UsersPage = async () => {
   const user = getUser();
 
-  if (user.role === "ADMIN") {
+  if (user?.role === "ADMIN") {
     redirect("/admin");
   }
 
