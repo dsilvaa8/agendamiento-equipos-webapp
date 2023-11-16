@@ -57,9 +57,9 @@ const NavBar = (user: any) => {
         >
           <NavbarItem>
             <Link
-              href="/admin"
+              href="/admin/"
               className={`text-xl ${
-                pathname === "/admin" ? "text-red-600" : "foreground"
+                pathname === "/admin/" ? "text-red-600" : "foreground"
               }`}
             >
               Inicio
@@ -120,9 +120,9 @@ const NavBar = (user: any) => {
         <NavbarMenu>
           <NavbarMenuItem>
             <Link
-              href="/admin"
+              href="/admin/"
               className={`text-xl ${
-                pathname === "/admin" ? "text-red-600" : "foreground"
+                pathname === "/admin/" ? "text-red-600" : "foreground"
               }`}
             >
               Inicio
