@@ -34,6 +34,7 @@ const RecordsPage = async () => {
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false, // Utilizar formato de 24 horas
     };
 
     return new Intl.DateTimeFormat("es-CL", options).format(date);
