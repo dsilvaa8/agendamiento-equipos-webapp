@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
 import { columns, RecordsColumn } from "./columns";
-import axios from "axios";
 
 interface RecordsClientProps {
   data: RecordsColumn[];
@@ -32,7 +31,7 @@ export const RecordsClient: React.FC<RecordsClientProps> = async ({ data }) => {
       </div>
       <Separator />
       <DataTable
-        searchKey="number"
+        searchKey="user"
         searchPlaceHolder="Buscar prestamo por numero"
         columns={columns}
         data={data}

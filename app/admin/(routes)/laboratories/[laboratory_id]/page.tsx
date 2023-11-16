@@ -1,14 +1,8 @@
 import prismadb from "@/lib/prismadb";
 
 import { LaboratoriesForm } from "./components/laboratories-form";
-import { getUser } from "@/lib/serverUtils";
-import { redirect } from "next/navigation";
 
 const UsersPage = async ({ params }: { params: { laboratory_id: string } }) => {
-  const user = getUser();
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
-  }
   const laboratory = await prismadb.laboratory.findUnique({
     where: {
       id: params.laboratory_id,

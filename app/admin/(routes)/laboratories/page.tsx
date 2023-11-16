@@ -1,16 +1,8 @@
 import prismadb from "@/lib/prismadb";
-import { LaboratoryColumn } from "./components/columns";
 import { LaboratoryClient } from "./components/client";
-import { getUser } from "@/lib/serverUtils";
-import { redirect } from "next/navigation";
+import { LaboratoryColumn } from "./components/columns";
 
 const UsersPage = async () => {
-  const user = getUser();
-
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
-  }
-
   const laboratories = await prismadb.laboratory.findMany({
     orderBy: {
       number: "asc", // Ordenar por número en orden ascendente

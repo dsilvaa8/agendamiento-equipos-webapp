@@ -3,7 +3,7 @@
 import axios from "axios";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 import { AlertModal } from "@/components/modals/alert-modal";
@@ -22,10 +22,11 @@ interface CellActionProps {
   data: UsersColum;
 }
 
-export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
+export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
 
   const onConfirm = async () => {
     try {
@@ -39,7 +40,7 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
       toast.success("Usuario eliminado.");
       router.refresh();
     } catch (error) {
-      toast.error("Algo salío mal.");
+      toast.error("Algo salió mal.");
     } finally {
       setOpen(false);
       setLoading(false);
@@ -51,11 +52,20 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
     toast.success("Id copiado.");
   };
 
-  const getUser = async () => {
-    const { data } = await axios.get("/api/auth/validateCookie");
-    return data.user;
-  };
-  const user = await getUser();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("/api/auth/validateCookie");
+        setUser(data.user);
+      } catch (error) {
+        toast.error("Error al obtener el usuario.");
+      }
+    };
+
+    if (!user) {
+      fetchData();
+    }
+  }, [user]);
 
   return (
     <>
@@ -79,7 +89,7 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
             <p className="cursor-pointer">Copiar Id</p>
           </DropdownMenuItem>
 
-          {user.role !== "ENCARGADO" && (
+          {user?.role !== "ENCARGADO" && (
             <>
               <DropdownMenuItem
                 onClick={() => router.push(`/admin/users/${data.id}`)}

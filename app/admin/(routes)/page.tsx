@@ -1,10 +1,27 @@
-import { getUser } from "@/lib/serverUtils";
+"use client";
 import { Overview } from "@/components/overview";
 import { fetchLaboratoriesData, fetchPcsData } from "@/app/actions/fetchData";
 import { mapLaboratoriesData, mapPcsData } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const DashboardPage = async () => {
-  const user = getUser();
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("/api/auth/validateCookie");
+        setUser(data.user);
+      } catch (error) {
+        console.error("Error al obtener el usuario:", error);
+      }
+    };
+
+    if (!user) {
+      fetchData();
+    }
+  }, [user]);
 
   // Llama a las funciones para obtener los datos de laboratorios y PCs
   const apiLaboratoriesData = await fetchLaboratoriesData();

@@ -3,7 +3,7 @@
 import axios from "axios";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { AlertModal } from "@/components/modals/alert-modal";
@@ -26,12 +26,22 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const getUser = async () => {
-    const { data } = await axios.get("/api/auth/validateCookie");
-    return data.user;
-  };
-  const user = await getUser();
+  const [user, setUser] = useState<any | null>(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get("/api/auth/validateCookie");
+        setUser(data.user);
+      } catch (error) {
+        console.error("Error al obtener el usuario:", error);
+      }
+    };
+
+    if (!user) {
+      fetchData();
+    }
+  }, [user]);
   const onConfirm = async () => {
     try {
       setLoading(true);
@@ -83,7 +93,7 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
             <Edit className="mr-2 h-4 w-4 cursor-pointer" />{" "}
             <p className="cursor-pointer">Detalles</p>
           </DropdownMenuItem>
-          {user.role === "JEFE" && (
+          {user?.role === "JEFE" && (
             <DropdownMenuItem onClick={() => setOpen(true)}>
               <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
               <p className="cursor-pointer"> Eliminar</p>

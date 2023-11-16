@@ -3,7 +3,7 @@
 import axios from "axios";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { AlertModal } from "@/components/modals/alert-modal";
@@ -26,11 +26,6 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const getUser = async () => {
-    const { data } = await axios.get("/api/auth/validateCookie");
-    return data.user;
-  };
-  const user = await getUser();
 
   const onConfirm = async () => {
     try {
