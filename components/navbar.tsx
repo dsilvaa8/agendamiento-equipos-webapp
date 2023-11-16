@@ -27,14 +27,13 @@ const NavBar = (user: any) => {
   return (
     <>
       <div className="hidden md:block">
-        <Link
-          href="/admin/home"
+        <div
           className="md:absolute md:top-0 md:left-0 lg:absolute lg:top-0 lg:left-0"
         >
           <Avatar className="relative top-3 left-10 z-50" onClick={() => { router.push("/admin/home") }}>
             <AvatarImage src="/images/logo.png" alt="unab" />
           </Avatar>
-        </Link>
+        </div>
       </div>
 
       <Navbar onMenuOpenChange={setIsMenuOpen} isBordered className="relative">
