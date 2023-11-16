@@ -55,7 +55,7 @@ export default function LoginCard() {
       const data = await response.data;
 
       if (data.status === 200) {
-        return router.push("/admin");
+        return router.push("/admin/home");
       }
     } catch (e: any) {
       console.log(e.request.status);
