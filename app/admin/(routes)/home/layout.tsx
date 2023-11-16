@@ -2,6 +2,7 @@ import Navbar from "@/components/navbar";
 import { getUser } from "@/lib/serverUtils";
 import axios, { AxiosError } from "axios";
 import { redirect } from "next/navigation";
+import DashboardPage from "./page";
 
 export default function RootLayout({
   children,
@@ -16,8 +17,7 @@ export default function RootLayout({
   }
   return (
     <>
-      <Navbar user={user} />
-      {children}
+      <DashboardPage user={user} />
     </>
   );
 }

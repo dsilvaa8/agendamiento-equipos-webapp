@@ -31,8 +31,8 @@ export const RecordsClient: React.FC<RecordsClientProps> = async ({ data }) => {
       </div>
       <Separator />
       <DataTable
-        searchKey="user"
-        searchPlaceHolder="Buscar prestamo por numero"
+        searchKey="rut"
+        searchPlaceHolder="Buscar prestamo por rut"
         columns={columns}
         data={data}
       />

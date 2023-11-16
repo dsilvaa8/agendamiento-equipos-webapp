@@ -4,12 +4,7 @@ import { RecordsForm } from "./components/records-form";
 import { getUser } from "@/lib/serverUtils";
 import { redirect } from "next/navigation";
 
-const UsersPage = async ({ params }: { params: { record_id: string } }) => {
-  const user = getUser();
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
-  }
-
+const RecordsPage = async ({ params }: { params: { record_id: string } }) => {
   const record = await prismadb.record.findUnique({
     where: {
       id: params.record_id,
@@ -29,4 +24,4 @@ const UsersPage = async ({ params }: { params: { record_id: string } }) => {
   );
 };
 
-export default UsersPage;
+export default RecordsPage;

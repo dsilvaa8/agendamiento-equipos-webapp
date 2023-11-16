@@ -6,17 +6,13 @@ import { CellAction } from "./cell-action";
 
 export type RecordsColumn = {
   id: string;
-  loan_date: string;
+  loan_date: any;
   return_date: any;
-  user: string;
-  pc: string;
+  rut: string;
+  barcode: string;
 };
 
 export const columns: ColumnDef<RecordsColumn>[] = [
-  {
-    accessorKey: "id",
-    header: "Id",
-  },
   {
     accessorKey: "loan_date",
     header: "Fecha prestamo",
@@ -26,12 +22,12 @@ export const columns: ColumnDef<RecordsColumn>[] = [
     header: "Fecha devolución",
   },
   {
-    accessorKey: "user",
+    accessorKey: "rut",
     header: "Rut Alumno",
   },
   {
-    accessorKey: "pc",
-    header: "Notebook",
+    accessorKey: "barcode",
+    header: "Código Notebook",
   },
   {
     id: "actions",

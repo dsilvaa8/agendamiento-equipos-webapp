@@ -26,11 +26,7 @@ export async function GET() {
   try {
     const user = verify(value, secret);
 
-    const response = {
-      user,
-    };
-
-    return new Response(JSON.stringify(response), {
+    return NextResponse.json(user, {
       status: 200,
     });
   } catch (e) {
@@ -39,7 +35,7 @@ export async function GET() {
         message: "Something went wrong",
       },
       {
-        status: 400,
+        status: 500,
       }
     );
   }

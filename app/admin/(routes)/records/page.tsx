@@ -1,16 +1,8 @@
 import prismadb from "@/lib/prismadb";
-import { RecordsColumn } from "./components/columns";
 import { RecordsClient } from "./components/client";
-import { getUser } from "@/lib/serverUtils";
-import { redirect } from "next/navigation";
+import { RecordsColumn } from "./components/columns";
 
 const RecordsPage = async () => {
-  const user = getUser();
-
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
-  }
-
   const records = await prismadb.record.findMany({
     orderBy: {
       loan_date: "desc", // Ordenar por número en orden ascendente
@@ -26,9 +18,10 @@ const RecordsPage = async () => {
     loan_date: formatDate(item.loan_date),
     return_date:
       item.return_date !== null ? formatDate(item.return_date) : "No devuelto",
-    user: item.user.rut,
-    pc: item.pc.barcode,
+    rut: item.user.rut,
+    barcode: item.pc.barcode,
   }));
+  console.log(formattedRecords);
 
   function formatDate(date: Date | null): string {
     if (date === null) {

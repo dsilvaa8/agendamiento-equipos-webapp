@@ -26,22 +26,7 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get("/api/auth/validateCookie");
-        setUser(data.user);
-      } catch (error) {
-        console.error("Error al obtener el usuario:", error);
-      }
-    };
-
-    if (!user) {
-      fetchData();
-    }
-  }, [user]);
   const onConfirm = async () => {
     try {
       setLoading(true);
@@ -51,7 +36,7 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
           "Content-Type": "application/json",
         },
       });
-      toast.success("Usuario eliminado.");
+      toast.success("Laboratorio eliminado.");
       router.refresh();
     } catch (error) {
       toast.error("Algo salío mal.");
@@ -93,12 +78,6 @@ export const CellAction: React.FC<CellActionProps> = async ({ data }) => {
             <Edit className="mr-2 h-4 w-4 cursor-pointer" />{" "}
             <p className="cursor-pointer">Detalles</p>
           </DropdownMenuItem>
-          {user?.role === "JEFE" && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Trash className="mr-2 h-4 w-4 cursor-pointer" />{" "}
-              <p className="cursor-pointer"> Eliminar</p>
-            </DropdownMenuItem>
-          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

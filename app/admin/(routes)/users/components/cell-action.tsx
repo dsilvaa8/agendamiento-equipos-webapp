@@ -27,6 +27,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any | null>(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await axios.get("/api/auth/validateCookie");
+        setUser(user);
+      } catch (error) {
+        toast.error("Error al obtener el usuario.");
+      }
+    };
+
+    if (!user) {
+      fetchData();
+    }
+  }, [user]);
 
   const onConfirm = async () => {
     try {
@@ -51,21 +65,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     navigator.clipboard.writeText(id);
     toast.success("Id copiado.");
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get("/api/auth/validateCookie");
-        setUser(data.user);
-      } catch (error) {
-        toast.error("Error al obtener el usuario.");
-      }
-    };
-
-    if (!user) {
-      fetchData();
-    }
-  }, [user]);
 
   return (
     <>
