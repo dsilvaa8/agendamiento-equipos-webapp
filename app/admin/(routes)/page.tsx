@@ -34,7 +34,7 @@ const DashboardPage = async () => {
   return (
     <div className="flex flex-col mx-auto w-full items-center justify-between gap-3 py-5">
       <h2>Bienvenido {user?.name}</h2>
-      <div className="flex p-10 w-full gap-5">
+      <div className="flex md:flex-row flex-col p-10 w-full gap-5">
         <Overview data={pcsData} title="Notebooks" />
         <Overview data={laboratoriesData} title="Laboratorios" />
       </div>
