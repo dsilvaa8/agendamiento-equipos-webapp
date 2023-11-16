@@ -36,7 +36,7 @@ const RecordsPage = async () => {
       minute: "2-digit",
     };
 
-    return new Intl.DateTimeFormat("es-ES", options).format(date);
+    return new Intl.DateTimeFormat("es-CL", options).format(date);
   }
 
   return (
