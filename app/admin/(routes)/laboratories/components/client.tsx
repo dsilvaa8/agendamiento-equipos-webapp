@@ -10,11 +10,11 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns, LaboratoryColumn } from "./columns";
 
-interface UsersClientProps {
+interface LaboratoryClientProps {
   data: LaboratoryColumn[];
 }
 
-export const LaboratoryClient: React.FC<UsersClientProps> = async ({
+export const LaboratoryClient: React.FC<LaboratoryClientProps> = async ({
   data,
 }) => {
   const router = useRouter();
@@ -33,7 +33,7 @@ export const LaboratoryClient: React.FC<UsersClientProps> = async ({
       </div>
       <Separator />
       <DataTable
-        searchKey="id"
+        searchKey="number"
         searchPlaceHolder="Buscar laboratorio por numero"
         columns={columns}
         data={data}

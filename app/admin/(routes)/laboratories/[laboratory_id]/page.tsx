@@ -2,7 +2,11 @@ import prismadb from "@/lib/prismadb";
 
 import { LaboratoriesForm } from "./components/laboratories-form";
 
-const UsersPage = async ({ params }: { params: { laboratory_id: string } }) => {
+const LaboratoriesPage = async ({
+  params,
+}: {
+  params: { laboratory_id: string };
+}) => {
   const laboratory = await prismadb.laboratory.findUnique({
     where: {
       id: params.laboratory_id,
@@ -21,4 +25,4 @@ const UsersPage = async ({ params }: { params: { laboratory_id: string } }) => {
   );
 };
 
-export default UsersPage;
+export default LaboratoriesPage;

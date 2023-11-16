@@ -14,26 +14,11 @@ import axios from "axios";
 
 interface UsersClientProps {
   data: UsersColum[];
+  user: any;
 }
 
-export const UsersClient: React.FC<UsersClientProps> = ({ data }) => {
+export const UsersClient: React.FC<UsersClientProps> = ({ data, user }) => {
   const router = useRouter();
-  const [user, setUser] = useState<any | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get("/api/auth/validateCookie");
-        setUser(data.user);
-      } catch (error) {
-        console.error("Error al obtener el usuario:", error);
-      }
-    };
-
-    if (!user) {
-      fetchData();
-    }
-  }, [user]);
 
   return (
     <>
@@ -50,8 +35,8 @@ export const UsersClient: React.FC<UsersClientProps> = ({ data }) => {
       </div>
       <Separator />
       <DataTable
-        searchKey="name"
-        searchPlaceHolder="Buscar usuario por nombre"
+        searchKey="rut"
+        searchPlaceHolder="Buscar usuario por rut"
         columns={columns}
         data={data}
       />
