@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOutButton } from "./LogOutButton";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -23,14 +23,15 @@ const NavBar = (user: any) => {
 
   const pathname = usePathname();
 
+  const router = useRouter()
   return (
     <>
       <div className="hidden md:block">
         <Link
-          href="/admin"
+          href="/admin/home"
           className="md:absolute md:top-0 md:left-0 lg:absolute lg:top-0 lg:left-0"
         >
-          <Avatar className="relative top-3 left-10 z-50">
+          <Avatar className="relative top-3 left-10 z-50" onClick={() => { router.push("/admin/home") }}>
             <AvatarImage src="/images/logo.png" alt="unab" />
           </Avatar>
         </Link>
@@ -44,11 +45,11 @@ const NavBar = (user: any) => {
           />
         </NavbarContent>
         <NavbarBrand className="block md:hidden lg:hidden">
-          <Link href="/admin">
-            <Avatar>
-              <AvatarImage src="/images/logo.png" alt="unab" />
-            </Avatar>
-          </Link>
+
+          <Avatar onClick={() => { router.push("/admin/home") }}>
+            <AvatarImage src="/images/logo.png" alt="unab" />
+          </Avatar>
+
         </NavbarBrand>
 
         <NavbarContent
@@ -58,9 +59,8 @@ const NavBar = (user: any) => {
           <NavbarItem>
             <Link
               href="/admin/home"
-              className={`text-xl ${
-                pathname === "/admin/home" ? "text-red-600" : "foreground"
-              }`}
+              className={`text-xl ${pathname === "/admin/home" ? "text-red-600" : "foreground"
+                }`}
             >
               Inicio
             </Link>
@@ -69,9 +69,8 @@ const NavBar = (user: any) => {
           <NavbarItem>
             <Link
               href="/admin/users"
-              className={`text-xl ${
-                pathname === "/admin/users" ? "text-red-600" : "foreground"
-              }`}
+              className={`text-xl ${pathname === "/admin/users" ? "text-red-600" : "foreground"
+                }`}
             >
               Usuarios
             </Link>
@@ -82,11 +81,10 @@ const NavBar = (user: any) => {
               <NavbarItem>
                 <Link
                   href="/admin/laboratories"
-                  className={`text-xl ${
-                    pathname === "/admin/laboratories"
-                      ? "text-red-600"
-                      : "foreground"
-                  }`}
+                  className={`text-xl ${pathname === "/admin/laboratories"
+                    ? "text-red-600"
+                    : "foreground"
+                    }`}
                 >
                   Laboratorios
                 </Link>
@@ -95,11 +93,10 @@ const NavBar = (user: any) => {
               <NavbarItem>
                 <Link
                   href="/admin/records"
-                  className={`text-xl ${
-                    pathname === "/admin/records"
-                      ? "text-red-600"
-                      : "foreground"
-                  }`}
+                  className={`text-xl ${pathname === "/admin/records"
+                    ? "text-red-600"
+                    : "foreground"
+                    }`}
                 >
                   Prestamos
                 </Link>
@@ -121,9 +118,8 @@ const NavBar = (user: any) => {
           <NavbarMenuItem>
             <Link
               href="/admin/home"
-              className={`text-xl ${
-                pathname === "/admin/home" ? "text-red-600" : "foreground"
-              }`}
+              className={`text-xl ${pathname === "/admin/home" ? "text-red-600" : "foreground"
+                }`}
             >
               Inicio
             </Link>
@@ -131,9 +127,8 @@ const NavBar = (user: any) => {
           <NavbarMenuItem>
             <Link
               href="/admin/users"
-              className={`text-xl ${
-                pathname === "/admin/users" ? "text-red-600" : "foreground"
-              }`}
+              className={`text-xl ${pathname === "/admin/users" ? "text-red-600" : "foreground"
+                }`}
             >
               Usuarios
             </Link>
@@ -144,11 +139,10 @@ const NavBar = (user: any) => {
               <NavbarMenuItem>
                 <Link
                   href="/admin/laboratories"
-                  className={`text-xl ${
-                    pathname === "/admin/laboratories"
-                      ? "text-red-600"
-                      : "foreground"
-                  }`}
+                  className={`text-xl ${pathname === "/admin/laboratories"
+                    ? "text-red-600"
+                    : "foreground"
+                    }`}
                 >
                   Laboratorios
                 </Link>
@@ -156,11 +150,10 @@ const NavBar = (user: any) => {
               <NavbarMenuItem>
                 <Link
                   href="/admin/records"
-                  className={`text-xl ${
-                    pathname === "/admin/records"
-                      ? "text-red-600"
-                      : "foreground"
-                  }`}
+                  className={`text-xl ${pathname === "/admin/records"
+                    ? "text-red-600"
+                    : "foreground"
+                    }`}
                 >
                   Prestamos
                 </Link>
